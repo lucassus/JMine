@@ -65,7 +65,7 @@ public class JMineFrame extends javax.swing.JFrame {
 		return jTextFieldFlags;
 	}
 	
-	public JTextField getCounteField() {
+	public JTextField getCounterField() {
 		return jTextFieldCounter;
 	}
 	

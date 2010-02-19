@@ -1,13 +1,3 @@
-/*
- * Mine.java
- *
- * Created on 29 sierpie� 2005, 20:35
- *
- * To change this template, choose Tools | Options and locate the template under
- * the Source Creation and Management node. Right-click the template and choose
- * Open. You can then make changes to the template in the Source Editor.
- */
-
 package org.lucassus.jmine.field;
 import javax.swing.JButton;
 
@@ -15,16 +5,18 @@ import javax.swing.JButton;
  * Pojedyncza komorka pola minowego
  * @author lucassus
  */
-public class Mine extends JButton {
+public class Field extends JButton {
 	
 	/**
 	 * Okresla czy na danym polu znajduje sie mina
 	 */
 	private boolean hasMine;
+
 	/**
 	 * Okresla czy pole zostalo oznaczone
 	 */
 	private boolean hasFlag;
+
 	/**
 	 * Okresla czy pole zostalo zdetonowane
 	 */
@@ -34,6 +26,7 @@ public class Mine extends JButton {
 	 * Pozycja X miny na polu minowym
 	 */
 	private int positionX;
+  
 	/**
 	 * Pozycja Y miny na polu minowym
 	 */
@@ -45,7 +38,7 @@ public class Mine extends JButton {
 	private int neightborMinesCount;
 	
 	/** Creates a new instance of Mine */
-	public Mine() {
+	public Field() {
 		isDetonated = false;
 		hasFlag = false;
 		neightborMinesCount = 0;
@@ -56,8 +49,9 @@ public class Mine extends JButton {
 	 * @param positionX pozycja x
 	 * @param positionY pozycja y
 	 */
-	public Mine(int positionX, int positionY) {
+	public Field(int positionX, int positionY) {
 		this();
+    
 		this.positionX = positionX;
 		this.positionY = positionY;
 	}
@@ -82,7 +76,7 @@ public class Mine extends JButton {
 	 * Funkcja zwraca true jesli na danym polu znajduje sie mina
 	 * @return boolean
 	 */
-	public boolean hasMine() {
+	public boolean getHasMine() {
 		return hasMine;
 	}
 	
@@ -91,7 +85,7 @@ public class Mine extends JButton {
 	 * @param true jesli na polu ma znajdowac sie mina.
 	 * false w przeciwnym przypadku
 	 */
-	public void hasMine(boolean hasMine) {
+	public void setHasMine(boolean hasMine) {
 		this.hasMine = hasMine;
 	}
 
@@ -116,7 +110,7 @@ public class Mine extends JButton {
 	 * false w przeciwnym przypadku
 	 * @return boolean
 	 */
-	public boolean isDetonated() {
+	public boolean getIsDetonated() {
 		return isDetonated;
 	}
 	
@@ -125,7 +119,7 @@ public class Mine extends JButton {
 	 * @param isDetonated true - jesli pole zostalo zdetonowane
 	 * false - w przeciwnym przypadku
 	 */
-	public void isDetonated(boolean isDetonated) {
+	public void setIsDetonated(boolean isDetonated) {
 		this.isDetonated = isDetonated;
 	}
 	
@@ -133,7 +127,7 @@ public class Mine extends JButton {
 	 * Zwraca true, jesli pole zostalo oznaczone
 	 * @return boolean
 	 */
-	public boolean hasFlag() {
+	public boolean getHasFlag() {
 		return hasFlag;
 	}
 	
@@ -142,7 +136,7 @@ public class Mine extends JButton {
 	 * @param hasFlag true - jesli pole zostalo oznaczone
 	 * false - w przeciwnym przypadku
 	 */
-	public void hasFlag(boolean hasFlag) {
+	public void setHasFlag(boolean hasFlag) {
 		
 		// jesli pole zostalo zdetonowane
 		if (isDetonated) return;
