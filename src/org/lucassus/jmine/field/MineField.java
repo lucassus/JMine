@@ -1,6 +1,5 @@
 package org.lucassus.jmine.field;
 
-import javax.swing.ImageIcon;
 import org.lucassus.jmine.JMineFrame;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -211,7 +210,7 @@ public class MineField {
         detonatedFields = 0;
         flagsCount = 0;
 
-        owner.getCounterField().setText("0");
+        owner.getCounterField().setText("");
         owner.getFlagsField().setText(Integer.toString(gameType.numberOfMines));
         owner.getNewGameButton().setIcon(GameIcon.FACE.getIcon());
 
@@ -527,19 +526,9 @@ public class MineField {
                 color = new Color(0, 0, 255);
             } else if (minesCount == 2) {
                 color = new Color(0, 128, 0);
-            } else if (minesCount == 3) {
+            } else if (minesCount >= 3) {
                 color = new Color(255, 0, 0);
-            } else if (minesCount == 4) {
-                color = new Color(255, 0, 0);
-            } else if (minesCount == 5) {
-                color = new Color(255, 0, 0);
-            } else if (minesCount == 6) {
-                color = new Color(255, 0, 0);
-            } else if (minesCount == 7) {
-                color = new Color(255, 0, 0);
-            } else if (minesCount == 8) {
-                color = new Color(255, 0, 0);
-            }
+            } 
 
             field.setForeground(color);
             field.setText(Integer.toString(minesCount));
@@ -603,17 +592,9 @@ public class MineField {
             Field field = iterator.next();
 
             // jesli pole zostalo juz zdetonowane
-            if (field.isDetonated()) {
-                continue;
-            }
-
             // jesli pole ma ustawiona flage
-            if (field.getHasFlag()) {
-                continue;
-            }
-
             // jesli na polu znajduje sie mina
-            if (field.getHasMine()) {
+            if (field.isDetonated() || field.getHasFlag() || field.getHasMine()) {
                 continue;
             }
 
