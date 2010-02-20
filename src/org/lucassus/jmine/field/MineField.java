@@ -5,7 +5,8 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JPanel;
 
 /**
@@ -212,7 +213,7 @@ public class MineField {
         owner.getCounterField().setText("0");
         owner.getFlagsField().setText(Integer.toString(gameType.numberOfMines));
 
-        owner.getNewGameButton().setIcon(new javax.swing.ImageIcon(getClass().getResource("/JMine/resources/face.gif")));
+        owner.getNewGameButton().setIcon(GameIcon.FACE.getIcon());
         initializeMineField();
     }
 
@@ -234,7 +235,7 @@ public class MineField {
         }
         isGameOver = true;
 
-        owner.getNewGameButton().setIcon(new javax.swing.ImageIcon(getClass().getResource("/JMine/resources/face_dead.gif")));
+        owner.getNewGameButton().setIcon(GameIcon.FACE_DEAD.getIcon());
 
         // pokazujemy wszystkie miny
         FieldsIterator iterator = new FieldsIterator(fields);
@@ -248,14 +249,14 @@ public class MineField {
             if (field.getHasMine()) {
                 field.setForeground(new java.awt.Color(255, 0, 0));
                 if (field.getHasFlag()) {
-                    field.setIcon(new javax.swing.ImageIcon(getClass().getResource("/JMine/resources/flag.gif")));
+                    field.setIcon(GameIcon.FLAG.getIcon());
                 } else {
-                    field.setIcon(new javax.swing.ImageIcon(getClass().getResource("/JMine/resources/mine.gif")));
+                    field.setIcon(GameIcon.MINE.getIcon());
                 }
             } else {
                 if (field.getHasFlag()) {
                     // nie trafilismy z flaga
-                    field.setIcon(new javax.swing.ImageIcon(getClass().getResource("/JMine/resources/flag_wrong.gif")));
+                    field.setIcon(GameIcon.FLAG_WRONG.getIcon());
                 }
             }
         }
@@ -273,12 +274,12 @@ public class MineField {
             Field field = iterator.next();
             if (!field.isDetonated() && !field.getHasFlag()) {
                 // stawiamy flage
-                field.setIcon(new javax.swing.ImageIcon(getClass().getResource("/JMine/resources/flag.gif")));
+                field.setIcon(GameIcon.FLAG.getIcon());
             }
         }
 
         owner.getFlagsField().setText("0");
-        owner.getNewGameButton().setIcon(new javax.swing.ImageIcon(getClass().getResource("/JMine/resources/face_win.gif")));
+        owner.getNewGameButton().setIcon(GameIcon.FACE_WIN.getIcon());
     }
 
     /**
@@ -381,7 +382,7 @@ public class MineField {
             if (field.getHasMine()) {
                 // wdepnelismy na mine ;)
                 field.setIsDetonated(true);
-                field.setIcon(new javax.swing.ImageIcon(getClass().getResource("/JMine/resources/mine_detonate.gif")));
+                field.setIcon(GameIcon.MINE_DETONATED.getIcon());
                 gameOver();
             } else {
                 detonateMine(field);
@@ -482,16 +483,16 @@ public class MineField {
                     if (otherField.getHasFlag() && !otherField.getHasMine()) {
                         // zle postawiona flaga
                         otherField.setIsDetonated(true);
-                        otherField.setIcon(new javax.swing.ImageIcon(getClass().getResource("/JMine/resources/flag_wrong.gif")));
+                        otherField.setIcon(GameIcon.FLAG_WRONG.getIcon());
                         // w nastepnej iteracji petla natrafi na mine :D
                         // i jebudu !!
                     } else if (!otherField.getHasFlag() && otherField.getHasMine()) {
                         // wdepnelismy na mine :/
                         otherField.setIsDetonated(true);
-                        otherField.setIcon(new javax.swing.ImageIcon(getClass().getResource("/JMine/resources/mine_detonate.gif")));
+                        otherField.setIcon(GameIcon.MINE_DETONATED.getIcon());
                         gameOver();
                     } else {
-                        detonateMine(x + i, y + j);
+                        detonateMine(otherField);
                     }
                 }
             }
@@ -551,21 +552,13 @@ public class MineField {
                         continue;
                     }
                     if ((x + i >= 0) && (y + j >= 0) && (x + i < gameType.mineFieldWidth) && (y + j < gameType.mineFieldHeight)) {
-                        detonateMine(x + i, y + j);
+                        Field otherField = fields[x + i][y + j];
+                        detonateMine(otherField);
                     }
                 }
             }
         }
 
-    }
-
-    /**
-     * Detonuje pole o podanych wspolrzednych
-     * @param posX pozycja X pola
-     * @param posY pozycja Y pola
-     */
-    private void detonateMine(int posX, int posY) {
-        detonateMine(fields[posX][posY]);
     }
 
     /**
@@ -603,34 +596,32 @@ public class MineField {
             return;
         }
 
-        Vector fieldsLeft = new Vector();
-        for (int i = 0; i < gameType.mineFieldWidth; i++) {
-            for (int j = 0; j < gameType.mineFieldHeight; j++) {
-                Field field = fields[i][j];
+        List<Field> fieldsLeft = new ArrayList<Field>();
+        FieldsIterator iterator = new FieldsIterator(fields);
+        while (iterator.hasNext()) {
+            Field field = iterator.next();
 
-                // jesli pole zostalo juz zdetonowane
-                if (field.isDetonated()) {
-                    continue;
-                }
-
-                // jesli pole ma ustawiona flage
-                if (field.getHasFlag()) {
-                    continue;
-                }
-
-                // jesli na polu znajduje sie mina
-                if (field.getHasMine()) {
-                    continue;
-                }
-
-                fieldsLeft.add(field);
+            // jesli pole zostalo juz zdetonowane
+            if (field.isDetonated()) {
+                continue;
             }
+
+            // jesli pole ma ustawiona flage
+            if (field.getHasFlag()) {
+                continue;
+            }
+
+            // jesli na polu znajduje sie mina
+            if (field.getHasMine()) {
+                continue;
+            }
+
+            fieldsLeft.add(field);
         }
 
-        int size = fieldsLeft.size();
         // losowanie pola do zdetonowania
-        int random = (int) Math.ceil(Math.random() * size);
-        detonateMine((Field) fieldsLeft.elementAt(random));
+        int position = (int) Math.ceil(Math.random() * fieldsLeft.size());
+        detonateMine(fieldsLeft.get(position));
 
         // TODO dodanie kary
     }

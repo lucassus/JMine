@@ -138,7 +138,6 @@ public class Field extends JButton {
         } else {
             setIcon(null);
         }
-
     }
 
     @Override
