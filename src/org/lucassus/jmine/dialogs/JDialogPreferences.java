@@ -5,13 +5,17 @@
  */
 package org.lucassus.jmine.dialogs;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.lucassus.jmine.JMineFrame;
+import org.lucassus.jmine.field.GameTypeException;
 import org.lucassus.jmine.field.MineField;
 import java.awt.Rectangle;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.lucassus.jmine.field.GameType;
 
 /**
  *
@@ -19,11 +23,11 @@ import javax.swing.event.ChangeListener;
  */
 public class JDialogPreferences extends javax.swing.JDialog {
 
-    private class SlidersListener implements ChangeListener {
+    private class SliderListener implements ChangeListener {
 
         JTextField textField;
 
-        SlidersListener(JTextField textField) {
+        SliderListener(JTextField textField) {
             this.textField = textField;
         }
 
@@ -51,47 +55,38 @@ public class JDialogPreferences extends javax.swing.JDialog {
 
         mineField = ((JMineFrame) parent).getMineField();
 
-        jSliderMineFieldWidth.addChangeListener(new SlidersListener(jTextField1));
-        jSliderMineFieldHeight.addChangeListener(new SlidersListener(jTextField2));
-        jSliderNumberOfMines.addChangeListener(new SlidersListener(jTextField3));
+        initializeSliders(mineField.getGameType());
+        jSliderMineFieldWidth.addChangeListener(new SliderListener(jTextFieldMineFieldWidth));
+        jSliderMineFieldHeight.addChangeListener(new SliderListener(jTextFieldMineFieldHeight));
+        jSliderNumberOfMines.addChangeListener(new SliderListener(jTextFieldNumberOfMines));
 
-        if (mineField.getGameType() == mineField.GAME_TYPE_NOVICE) {
-            jRadioButtonDifficult1.setSelected(true);
-            initializeSliders(mineField.GAME_TYPE_NOVICE);
-            setUserSettingsEnabled(false);
-        } else if (mineField.getGameType() == mineField.GAME_TYPE_INTERMEDIATE) {
-            jRadioButtonDifficult2.setSelected(true);
-            initializeSliders(mineField.GAME_TYPE_INTERMEDIATE);
-            setUserSettingsEnabled(false);
-        } else if (mineField.getGameType() == mineField.GAME_TYPE_EXPERT) {
-            jRadioButtonDifficult3.setSelected(true);
-            initializeSliders(mineField.GAME_TYPE_EXPERT);
-            setUserSettingsEnabled(false);
+        if (mineField.getGameType() == GameType.NOVICE) {
+            jRadioButtonNoviceGame.setSelected(true);
+            disableUserSettings();
+        } else if (mineField.getGameType() == GameType.INTERMEDIATE) {
+            jRadioButtonIntermediateGame.setSelected(true);
+            disableUserSettings();
+        } else if (mineField.getGameType() == GameType.EXPERT) {
+            jRadioButtonExpertGame.setSelected(true);
+            disableUserSettings();
         } else {
-            jRadioButtonUser.setSelected(true);
-            initializeSliders(mineField.GAME_TYPE_USER);
-            setUserSettingsEnabled(true);
+            jRadioButtonUserGame.setSelected(true);
+            enableUserSettings();
         }
     }
 
-    private void initializeSliders(int gameType) {
-        if (gameType == mineField.GAME_TYPE_NOVICE) {
-            jSliderMineFieldWidth.setValue(mineField.noviceGame.getMineFieldWidth());
-            jSliderMineFieldHeight.setValue(mineField.noviceGame.getMineFiledHeight());
-            jSliderNumberOfMines.setValue(mineField.noviceGame.getNumberOfMines());
-        } else if (gameType == mineField.GAME_TYPE_INTERMEDIATE) {
-            jSliderMineFieldWidth.setValue(mineField.intermediateGame.getMineFieldWidth());
-            jSliderMineFieldHeight.setValue(mineField.intermediateGame.getMineFiledHeight());
-            jSliderNumberOfMines.setValue(mineField.intermediateGame.getNumberOfMines());
-        } else if (gameType == mineField.GAME_TYPE_EXPERT) {
-            jSliderMineFieldWidth.setValue(mineField.expertGame.getMineFieldWidth());
-            jSliderMineFieldHeight.setValue(mineField.expertGame.getMineFiledHeight());
-            jSliderNumberOfMines.setValue(mineField.expertGame.getNumberOfMines());
-        } else {
-            jSliderMineFieldWidth.setValue(mineField.userGame.getMineFieldWidth());
-            jSliderMineFieldHeight.setValue(mineField.userGame.getMineFiledHeight());
-            jSliderNumberOfMines.setValue(mineField.userGame.getNumberOfMines());
-        }
+    private void initializeSliders(GameType gameType) {
+        jSliderMineFieldWidth.setValue(gameType.getMineFieldWidth());
+        jSliderMineFieldHeight.setValue(gameType.getMineFiledHeight());
+        jSliderNumberOfMines.setValue(gameType.getNumberOfMines());
+    }
+
+    private void enableUserSettings() {
+        setUserSettingsEnabled(true);
+    }
+
+    private void disableUserSettings() {
+        setUserSettingsEnabled(false);
     }
 
     private void setUserSettingsEnabled(boolean enabled) {
@@ -114,10 +109,10 @@ public class JDialogPreferences extends javax.swing.JDialog {
 
         buttonGroupGameDifficult = new javax.swing.ButtonGroup();
         jPanelDifficult = new javax.swing.JPanel();
-        jRadioButtonDifficult1 = new javax.swing.JRadioButton();
-        jRadioButtonDifficult2 = new javax.swing.JRadioButton();
-        jRadioButtonDifficult3 = new javax.swing.JRadioButton();
-        jRadioButtonUser = new javax.swing.JRadioButton();
+        jRadioButtonNoviceGame = new javax.swing.JRadioButton();
+        jRadioButtonIntermediateGame = new javax.swing.JRadioButton();
+        jRadioButtonExpertGame = new javax.swing.JRadioButton();
+        jRadioButtonUserGame = new javax.swing.JRadioButton();
         jPanelUserSettings = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -125,9 +120,9 @@ public class JDialogPreferences extends javax.swing.JDialog {
         jSliderMineFieldWidth = new javax.swing.JSlider();
         jSliderMineFieldHeight = new javax.swing.JSlider();
         jSliderNumberOfMines = new javax.swing.JSlider();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
+        jTextFieldMineFieldWidth = new javax.swing.JTextField();
+        jTextFieldMineFieldHeight = new javax.swing.JTextField();
+        jTextFieldNumberOfMines = new javax.swing.JTextField();
         jPanelButtons = new javax.swing.JPanel();
         jButtonOk = new javax.swing.JButton();
         jButtonCancel = new javax.swing.JButton();
@@ -140,55 +135,55 @@ public class JDialogPreferences extends javax.swing.JDialog {
         jPanelDifficult.setBorder(javax.swing.BorderFactory.createTitledBorder("Game difficult"));
         jPanelDifficult.setLayout(new java.awt.GridBagLayout());
 
-        buttonGroupGameDifficult.add(jRadioButtonDifficult1);
-        jRadioButtonDifficult1.setText("Novice");
-        jRadioButtonDifficult1.addActionListener(new java.awt.event.ActionListener() {
+        buttonGroupGameDifficult.add(jRadioButtonNoviceGame);
+        jRadioButtonNoviceGame.setText("Novice");
+        jRadioButtonNoviceGame.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButtonDifficult1ActionPerformed(evt);
+                jRadioButtonNoviceGameActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        jPanelDifficult.add(jRadioButtonDifficult1, gridBagConstraints);
+        jPanelDifficult.add(jRadioButtonNoviceGame, gridBagConstraints);
 
-        buttonGroupGameDifficult.add(jRadioButtonDifficult2);
-        jRadioButtonDifficult2.setText("Intermediate");
-        jRadioButtonDifficult2.addActionListener(new java.awt.event.ActionListener() {
+        buttonGroupGameDifficult.add(jRadioButtonIntermediateGame);
+        jRadioButtonIntermediateGame.setText("Intermediate");
+        jRadioButtonIntermediateGame.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButtonDifficult2ActionPerformed(evt);
+                jRadioButtonIntermediateGameActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        jPanelDifficult.add(jRadioButtonDifficult2, gridBagConstraints);
+        jPanelDifficult.add(jRadioButtonIntermediateGame, gridBagConstraints);
 
-        buttonGroupGameDifficult.add(jRadioButtonDifficult3);
-        jRadioButtonDifficult3.setText("Expert");
-        jRadioButtonDifficult3.addActionListener(new java.awt.event.ActionListener() {
+        buttonGroupGameDifficult.add(jRadioButtonExpertGame);
+        jRadioButtonExpertGame.setText("Expert");
+        jRadioButtonExpertGame.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButtonDifficult3ActionPerformed(evt);
+                jRadioButtonExpertGameActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        jPanelDifficult.add(jRadioButtonDifficult3, gridBagConstraints);
+        jPanelDifficult.add(jRadioButtonExpertGame, gridBagConstraints);
 
-        buttonGroupGameDifficult.add(jRadioButtonUser);
-        jRadioButtonUser.setText("User");
-        jRadioButtonUser.addActionListener(new java.awt.event.ActionListener() {
+        buttonGroupGameDifficult.add(jRadioButtonUserGame);
+        jRadioButtonUserGame.setText("User");
+        jRadioButtonUserGame.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButtonUserActionPerformed(evt);
+                jRadioButtonUserGameActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        jPanelDifficult.add(jRadioButtonUser, gridBagConstraints);
+        jPanelDifficult.add(jRadioButtonUserGame, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
@@ -249,35 +244,35 @@ public class JDialogPreferences extends javax.swing.JDialog {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 2);
         jPanelUserSettings.add(jSliderNumberOfMines, gridBagConstraints);
 
-        jTextField1.setEditable(false);
-        jTextField1.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        jTextField1.setText("0");
-        jTextField1.setMinimumSize(new java.awt.Dimension(20, 19));
-        jTextField1.setPreferredSize(new java.awt.Dimension(40, 19));
+        jTextFieldMineFieldWidth.setEditable(false);
+        jTextFieldMineFieldWidth.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jTextFieldMineFieldWidth.setText("0");
+        jTextFieldMineFieldWidth.setMinimumSize(new java.awt.Dimension(20, 19));
+        jTextFieldMineFieldWidth.setPreferredSize(new java.awt.Dimension(40, 19));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
-        jPanelUserSettings.add(jTextField1, gridBagConstraints);
+        jPanelUserSettings.add(jTextFieldMineFieldWidth, gridBagConstraints);
 
-        jTextField2.setEditable(false);
-        jTextField2.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        jTextField2.setText("0");
-        jTextField2.setMinimumSize(new java.awt.Dimension(20, 19));
-        jTextField2.setPreferredSize(new java.awt.Dimension(40, 19));
+        jTextFieldMineFieldHeight.setEditable(false);
+        jTextFieldMineFieldHeight.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jTextFieldMineFieldHeight.setText("0");
+        jTextFieldMineFieldHeight.setMinimumSize(new java.awt.Dimension(20, 19));
+        jTextFieldMineFieldHeight.setPreferredSize(new java.awt.Dimension(40, 19));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
-        jPanelUserSettings.add(jTextField2, gridBagConstraints);
+        jPanelUserSettings.add(jTextFieldMineFieldHeight, gridBagConstraints);
 
-        jTextField3.setEditable(false);
-        jTextField3.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        jTextField3.setText("0");
-        jTextField3.setMinimumSize(new java.awt.Dimension(20, 19));
-        jTextField3.setPreferredSize(new java.awt.Dimension(40, 19));
+        jTextFieldNumberOfMines.setEditable(false);
+        jTextFieldNumberOfMines.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jTextFieldNumberOfMines.setText("0");
+        jTextFieldNumberOfMines.setMinimumSize(new java.awt.Dimension(20, 19));
+        jTextFieldNumberOfMines.setPreferredSize(new java.awt.Dimension(40, 19));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 5;
-        jPanelUserSettings.add(jTextField3, gridBagConstraints);
+        jPanelUserSettings.add(jTextFieldNumberOfMines, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
@@ -313,43 +308,47 @@ public class JDialogPreferences extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-	private void jRadioButtonUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonUserActionPerformed
-            initializeSliders(mineField.GAME_TYPE_USER);
+	private void jRadioButtonUserGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonUserGameActionPerformed
+            initializeSliders(mineField.getGameType());
             setUserSettingsEnabled(true);
-	}//GEN-LAST:event_jRadioButtonUserActionPerformed
+	}//GEN-LAST:event_jRadioButtonUserGameActionPerformed
 
-	private void jRadioButtonDifficult3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonDifficult3ActionPerformed
-            initializeSliders(mineField.GAME_TYPE_EXPERT);
+	private void jRadioButtonExpertGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonExpertGameActionPerformed
+            initializeSliders(mineField.getGameType());
             setUserSettingsEnabled(false);
-	}//GEN-LAST:event_jRadioButtonDifficult3ActionPerformed
+	}//GEN-LAST:event_jRadioButtonExpertGameActionPerformed
 
-	private void jRadioButtonDifficult2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonDifficult2ActionPerformed
-            initializeSliders(mineField.GAME_TYPE_INTERMEDIATE);
+	private void jRadioButtonIntermediateGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonIntermediateGameActionPerformed
+            initializeSliders(mineField.getGameType());
             setUserSettingsEnabled(false);
-	}//GEN-LAST:event_jRadioButtonDifficult2ActionPerformed
+	}//GEN-LAST:event_jRadioButtonIntermediateGameActionPerformed
 
-	private void jRadioButtonDifficult1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonDifficult1ActionPerformed
-            initializeSliders(mineField.GAME_TYPE_NOVICE);
+	private void jRadioButtonNoviceGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonNoviceGameActionPerformed
+            initializeSliders(mineField.getGameType());
             setUserSettingsEnabled(false);
-	}//GEN-LAST:event_jRadioButtonDifficult1ActionPerformed
+	}//GEN-LAST:event_jRadioButtonNoviceGameActionPerformed
 
 	private void jButtonOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonOkActionPerformed
-            if (jRadioButtonDifficult1.isSelected()) {
-                mineField.setGameType(mineField.GAME_TYPE_NOVICE);
-            } else if (jRadioButtonDifficult2.isSelected()) {
-                mineField.setGameType(mineField.GAME_TYPE_INTERMEDIATE);
-            } else if (jRadioButtonDifficult3.isSelected()) {
-                mineField.setGameType(mineField.GAME_TYPE_EXPERT);
+            if (jRadioButtonNoviceGame.isSelected()) {
+                mineField.setGameType(GameType.NOVICE);
+            } else if (jRadioButtonIntermediateGame.isSelected()) {
+                mineField.setGameType(GameType.INTERMEDIATE);
+            } else if (jRadioButtonExpertGame.isSelected()) {
+                mineField.setGameType(GameType.EXPERT);
             } else {
                 int height = jSliderMineFieldHeight.getValue();
                 int width = jSliderMineFieldWidth.getValue();
                 int mines = jSliderNumberOfMines.getValue();
 
-                mineField.userGame.setMineFieldWidth(width);
-                mineField.userGame.setMineFieldHeight(height);
-                mineField.userGame.setNumberOfMines(mines);
+                try {
+                    GameType.USER.setMineFieldWidth(width);
+                    GameType.USER.setMineFieldHeight(height);
+                    GameType.USER.setNumberOfMines(mines);
+                } catch (GameTypeException ex) {
+                    Logger.getLogger(JDialogPreferences.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
-                mineField.setGameType(mineField.GAME_TYPE_USER);
+                mineField.setGameType(GameType.USER);
             }
 
             setVisible(false);
@@ -370,15 +369,15 @@ public class JDialogPreferences extends javax.swing.JDialog {
     private javax.swing.JPanel jPanelButtons;
     private javax.swing.JPanel jPanelDifficult;
     private javax.swing.JPanel jPanelUserSettings;
-    private javax.swing.JRadioButton jRadioButtonDifficult1;
-    private javax.swing.JRadioButton jRadioButtonDifficult2;
-    private javax.swing.JRadioButton jRadioButtonDifficult3;
-    private javax.swing.JRadioButton jRadioButtonUser;
+    private javax.swing.JRadioButton jRadioButtonExpertGame;
+    private javax.swing.JRadioButton jRadioButtonIntermediateGame;
+    private javax.swing.JRadioButton jRadioButtonNoviceGame;
+    private javax.swing.JRadioButton jRadioButtonUserGame;
     private javax.swing.JSlider jSliderMineFieldHeight;
     private javax.swing.JSlider jSliderMineFieldWidth;
     private javax.swing.JSlider jSliderNumberOfMines;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField jTextFieldMineFieldHeight;
+    private javax.swing.JTextField jTextFieldMineFieldWidth;
+    private javax.swing.JTextField jTextFieldNumberOfMines;
     // End of variables declaration//GEN-END:variables
 }

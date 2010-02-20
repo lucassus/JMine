@@ -5,7 +5,7 @@ public enum GameType {
     NOVICE(9, 9, 10),
     INTERMEDIATE(16, 16, 40),
     EXPERT(30, 16, 99),
-    USER(0, 0, 0);
+    USER(9, 9, 10);
     /**
      * Szerokosc pola minowego
      */

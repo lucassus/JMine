@@ -16,22 +16,6 @@ import javax.swing.JPanel;
 public class MineField {
 
     /**
-     * Rozmiary pola minowego definiowane przez uzytkownika
-     */
-    public static final int GAME_TYPE_USER = 0;
-    /**
-     * Poczatkujacy gracz
-     */
-    public static final int GAME_TYPE_NOVICE = 1;
-    /**
-     * Zaawansowany gracz
-     */
-    public static final int GAME_TYPE_INTERMEDIATE = 2;
-    /**
-     * Gracz ekspert
-     */
-    public static final int GAME_TYPE_EXPERT = 3;
-    /**
      * true jesli gra sie zakonczyla
      */
     private boolean isGameOver;
@@ -43,117 +27,10 @@ public class MineField {
      * Liczba postawionych flag
      */
     private int flagsCount;
-
-    private abstract class GameType {
-
-        /**
-         * Szerokosc pola minowego
-         */
-        protected int mineFieldWidth = 9;
-        /**
-         * Wysokosc pola minowego
-         */
-        protected int mineFieldHeight = 9;
-        /**
-         * Liczba min znajdujacych sie na polu minowym
-         */
-        protected int numberOfMines = 10;
-        protected int gameType;
-
-        public int getMineFieldWidth() {
-            return mineFieldWidth;
-        }
-
-        public int getMineFiledHeight() {
-            return mineFieldHeight;
-        }
-
-        public int getNumberOfMines() {
-            return numberOfMines;
-        }
-    }
-
-    /**
-     * Klasa reprezentujaca gre uzytkownika poczatkujacego
-     */
-    public class NoviceGame extends GameType {
-
-        NoviceGame() {
-            gameType = GAME_TYPE_NOVICE;
-            mineFieldWidth = 9;
-            mineFieldHeight = 9;
-            numberOfMines = 10;
-        }
-    }
-
-    /**
-     * Klasa reprezentuja gre uzytkownika sredniozaawansowanego
-     */
-    public class IntermediateGame extends GameType {
-
-        IntermediateGame() {
-            gameType = GAME_TYPE_INTERMEDIATE;
-            mineFieldWidth = 16;
-            mineFieldHeight = 16;
-            numberOfMines = 40;
-        }
-    }
-
-    /**
-     * Klasa reprezentujaca gre uzytkownika zaawansowanego
-     */
-    public class ExpertGame extends GameType {
-
-        ExpertGame() {
-            gameType = GAME_TYPE_EXPERT;
-            mineFieldWidth = 30;
-            mineFieldHeight = 16;
-            numberOfMines = 99;
-        }
-    }
-
-    /**
-     * Klasa reprezentujaca gre definiowana przez uzytkownika
-     */
-    public class UserGame extends GameType {
-
-        UserGame() {
-            gameType = GAME_TYPE_USER;
-        }
-
-        public void setMineFieldWidth(int mineFieldWidth) {
-            this.mineFieldWidth = mineFieldWidth;
-        }
-
-        public void setMineFieldHeight(int mineFieldHeight) {
-            this.mineFieldHeight = mineFieldHeight;
-        }
-
-        public void setNumberOfMines(int numberOfMines) {
-            this.numberOfMines = numberOfMines;
-        }
-    }
     /**
      * Rozmiar przycisku z mina (w pikselach)
      */
     private final int mineSize = 20;
-    /**
-     * Obiekt gry zdefiniowanej przez uzytkownika
-     * @see UserGame
-     */
-    public UserGame userGame = new UserGame();
-    /**
-     * Obiekt gry uzytkownika poczatkujacego
-     */
-    public NoviceGame noviceGame = new NoviceGame();
-    /**
-     * Obiekt gry uzytkownika sredniozaawansowanego
-     */
-    public IntermediateGame intermediateGame = new IntermediateGame();
-    /**
-     * Obiekt gry uzytkownika eksperta
-     */
-    public ExpertGame expertGame = new ExpertGame();
     /**
      * Rodzaj gry
      * @see UserGame
@@ -173,7 +50,7 @@ public class MineField {
         flagsCount = 0;
         detonatedFields = 0;
         this.owner = owner;
-        gameType = noviceGame;
+        gameType = GameType.NOVICE;
 
         newGame();
     }
@@ -183,7 +60,7 @@ public class MineField {
      * @return dlugosc pola minowego
      */
     public int getMineFieldWidth() {
-        return gameType.mineFieldWidth;
+        return gameType.getMineFieldWidth();
     }
 
     /**
@@ -191,7 +68,7 @@ public class MineField {
      * @return wysokosc pola minowego
      */
     public int getMineFielddHeight() {
-        return gameType.mineFieldHeight;
+        return gameType.getMineFiledHeight();
     }
 
     /**
@@ -199,7 +76,7 @@ public class MineField {
      * @return liczba min znajdujacych sie na polu minowym
      */
     public int getNumberOfMines() {
-        return gameType.numberOfMines;
+        return gameType.getNumberOfMines();
     }
 
     /**
@@ -211,7 +88,7 @@ public class MineField {
         flagsCount = 0;
 
         owner.getCounterField().setText("");
-        owner.getFlagsField().setText(Integer.toString(gameType.numberOfMines));
+        owner.getFlagsField().setText(Integer.toString(gameType.getNumberOfMines()));
         owner.getNewGameButton().setIcon(GameIcon.FACE.getIcon());
 
         initializeMineField();
@@ -221,7 +98,7 @@ public class MineField {
      * Rozpoczyna nowa gre
      * @param gameType rodzaj gry (poziom trudnosci)
      */
-    public void newGame(int gameType) {
+    public void newGame(GameType gameType) {
         setGameType(gameType);
         newGame();
     }
@@ -290,9 +167,9 @@ public class MineField {
         jPanelMineField.removeAll();
 
         // tworzymy przeciski reprezentujace komorki pola
-        fields = new Field[gameType.mineFieldWidth][gameType.mineFieldHeight];
-        for (int i = 0; i < gameType.mineFieldWidth; i++) {
-            for (int j = 0; j < gameType.mineFieldHeight; j++) {
+        fields = new Field[getMineFieldWidth()][getMineFielddHeight()];
+        for (int i = 0; i < getMineFieldWidth(); i++) {
+            for (int j = 0; j < getMineFielddHeight(); j++) {
                 Field field = new Field(i, j) {
 
                     {
@@ -320,7 +197,7 @@ public class MineField {
         }
 
         // losujemy miny
-        for (int i = 0; i < gameType.numberOfMines; i++) {
+        for (int i = 0; i < getNumberOfMines(); i++) {
             setMine();	// wstawiamy mine
         }
 
@@ -334,8 +211,8 @@ public class MineField {
      */
     private boolean setMine() {
         // losujemy wspolrzedne
-        int x = (int) Math.floor(Math.random() * gameType.mineFieldWidth);
-        int y = (int) Math.floor(Math.random() * gameType.mineFieldHeight);
+        int x = (int) Math.floor(Math.random() * getMineFieldWidth());
+        int y = (int) Math.floor(Math.random() * getMineFielddHeight());
         if (!fields[x][y].getHasMine()) {
             fields[x][y].setHasMine(true);
             for (int i = -1; i < 2; i++) {
@@ -343,7 +220,7 @@ public class MineField {
                     if (i == 0 && j == 0) {
                         continue;
                     }
-                    if ((x + i >= 0) && (y + j >= 0) && (x + i < gameType.mineFieldWidth) && (y + j < gameType.mineFieldHeight)) {
+                    if ((x + i >= 0) && (y + j >= 0) && (x + i < getMineFieldWidth()) && (y + j < getMineFielddHeight())) {
                         fields[x + i][y + j].incrementNeightborMinesCount();
                     }
                 }
@@ -388,7 +265,7 @@ public class MineField {
                 detonateMine(field);
             }
 
-            if (detonatedFields == (gameType.mineFieldHeight * gameType.mineFieldWidth - gameType.numberOfMines)) {
+            if (detonatedFields == (getMineFieldWidth() * getMineFielddHeight() - getNumberOfMines())) {
                 // jesli odkryto wszystkie niezaminowane pola
                 gameWin();
             }
@@ -403,7 +280,7 @@ public class MineField {
             }
 
             // jesli postawiono tyle flag ile jest min
-            if (flagsCount == gameType.numberOfMines) {
+            if (flagsCount == getNumberOfMines()) {
                 return;
             }
 
@@ -434,7 +311,7 @@ public class MineField {
                         if (i == 0 && j == 0) {
                             continue;
                         }
-                        if ((x + i >= 0) && (y + j >= 0) && (x + i < gameType.mineFieldWidth) && (y + j < gameType.mineFieldHeight)) {
+                        if ((x + i >= 0) && (y + j >= 0) && (x + i < getMineFieldWidth()) && (y + j < getMineFielddHeight())) {
                             if (fields[x + i][y + j].getHasFlag()) {
                                 mineFlagsCount++;
                             }
@@ -449,7 +326,7 @@ public class MineField {
                     detonateNeighbourMines(field);
                 }
 
-                if (detonatedFields == (gameType.mineFieldHeight * gameType.mineFieldWidth - gameType.numberOfMines)) {
+                if (detonatedFields == (getMineFielddHeight() * getMineFieldWidth() - getNumberOfMines())) {
                     // jesli odkryto wszystkie niezaminowane pola
                     gameWin();
                 }
@@ -473,7 +350,7 @@ public class MineField {
                     continue;
                 }
 
-                if ((x + i >= 0) && (y + j >= 0) && (x + i < gameType.mineFieldWidth) && (y + j < gameType.mineFieldHeight)) {
+                if ((x + i >= 0) && (y + j >= 0) && (x + i < getMineFieldWidth()) && (y + j < getMineFielddHeight())) {
                     Field otherField = fields[x + i][y + j];
 
                     if (otherField.getHasFlag() && otherField.getHasMine()) {
@@ -528,7 +405,7 @@ public class MineField {
                 color = new Color(0, 128, 0);
             } else if (minesCount >= 3) {
                 color = new Color(255, 0, 0);
-            } 
+            }
 
             field.setForeground(color);
             field.setText(Integer.toString(minesCount));
@@ -541,7 +418,7 @@ public class MineField {
                     if (i == 0 && j == 0) {
                         continue;
                     }
-                    if ((x + i >= 0) && (y + j >= 0) && (x + i < gameType.mineFieldWidth) && (y + j < gameType.mineFieldHeight)) {
+                    if ((x + i >= 0) && (y + j >= 0) && (x + i < getMineFieldWidth()) && (y + j < getMineFielddHeight())) {
                         Field otherField = fields[x + i][y + j];
                         detonateMine(otherField);
                     }
@@ -555,24 +432,16 @@ public class MineField {
      * Zwraca rodzaj gry
      * @return rodzaj gry (poziom trudnosci, gra uzytkownika)
      */
-    public int getGameType() {
-        return gameType.gameType;
+    public GameType getGameType() {
+        return gameType;
     }
 
     /**
      * Ustawia rodzaj gry
      * @param rodzaj gry
      */
-    public void setGameType(int gameType) {
-        if (gameType == GAME_TYPE_NOVICE) {
-            this.gameType = noviceGame;
-        } else if (gameType == GAME_TYPE_INTERMEDIATE) {
-            this.gameType = intermediateGame;
-        } else if (gameType == GAME_TYPE_EXPERT) {
-            this.gameType = expertGame;
-        } else {
-            this.gameType = userGame;
-        }
+    public void setGameType(GameType gameType) {
+        this.gameType = gameType;
     }
 
     /**
