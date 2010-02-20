@@ -226,23 +226,15 @@ public class MineField {
 
     private void middleMouseButtonClick(Field field) {
         if (field.isDetonated()) {
-            // jesli pole zostalo juz zdetonowane
-            int x = field.getPositionX();
-            int y = field.getPositionY();
-            int mineFlagsCount = 0;
+
             // liczymy liczbe flag w sasiedztwie
-            for (int i = -1; i < 2; i++) {
-                for (int j = -1; j < 2; j++) {
-                    if (i == 0 && j == 0) {
-                        continue;
-                    }
-                    if ((x + i >= 0) && (y + j >= 0) && (x + i < getMineFieldWidth()) && (y + j < getMineFielddHeight())) {
-                        if (fields[x + i][y + j].getHasFlag()) {
-                            mineFlagsCount++;
-                        }
-                    }
+            int mineFlagsCount = 0;
+            for (Field otherField : getNeighbourFieldsFor(field)) {
+                if (otherField.getHasFlag()) {
+                    mineFlagsCount++;
                 }
             }
+
             // sprawdzamy czy liczba min w sasiedztwie zgadza sie
             // z liczba postawionych flag
             if (field.getNeightborMinesCount() == mineFlagsCount) {
