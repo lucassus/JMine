@@ -123,7 +123,7 @@ public class MineField {
                 continue;
             }
 
-            if (field.getHasMine()) {
+            if (field.hasMine()) {
                 field.setForeground(new java.awt.Color(255, 0, 0));
                 if (field.getHasFlag()) {
                     field.setIcon(GameIcon.FLAG.getIcon());
@@ -142,7 +142,7 @@ public class MineField {
     /**
      * Procedura wywolywana jesli gra zakonczyla sie zwycienstwem
      */
-    private void gameWin() {
+    private void winGame() {
         isGameOver = true;
 
         // oflagujemy pozostawione nieoflagowane miny
@@ -204,6 +204,77 @@ public class MineField {
         owner.pack();
     }
 
+    private void leftMouseButtonClick(Field field) {
+        // jesli pole ma ustawiona flage
+        if (field.getHasFlag()) {
+            return;
+        }
+
+        if (field.hasMine()) {
+            // wdepnelismy na mine ;)
+            field.setDetonated(true);
+            field.setIcon(GameIcon.MINE_DETONATED.getIcon());
+            gameOver();
+        } else {
+            detonateMine(field);
+        }
+        if (detonatedFields == (getMineFieldWidth() * getMineFielddHeight() - getNumberOfMines())) {
+            // jesli odkryto wszystkie niezaminowane pola
+            winGame();
+        }
+    }
+
+    private void middleMouseButtonClick(Field field) {
+        if (field.isDetonated()) {
+            // jesli pole zostalo juz zdetonowane
+            int x = field.getPositionX();
+            int y = field.getPositionY();
+            int mineFlagsCount = 0;
+            // liczymy liczbe flag w sasiedztwie
+            for (int i = -1; i < 2; i++) {
+                for (int j = -1; j < 2; j++) {
+                    if (i == 0 && j == 0) {
+                        continue;
+                    }
+                    if ((x + i >= 0) && (y + j >= 0) && (x + i < getMineFieldWidth()) && (y + j < getMineFielddHeight())) {
+                        if (fields[x + i][y + j].getHasFlag()) {
+                            mineFlagsCount++;
+                        }
+                    }
+                }
+            }
+            // sprawdzamy czy liczba min w sasiedztwie zgadza sie
+            // z liczba postawionych flag
+            if (field.getNeightborMinesCount() == mineFlagsCount) {
+                // detonujemy sasiednie pola
+                detonateNeighbourMines(field);
+            }
+            if (detonatedFields == (getMineFielddHeight() * getMineFieldWidth() - getNumberOfMines())) {
+                // jesli odkryto wszystkie niezaminowane pola
+                winGame();
+            }
+        }
+    }
+
+    private void rightMouseButtonClick(Field field) {
+        // ustawienie/sciagniecie flagi z pola minowego
+        // jesli pole zostalo juz zdetonowane
+        if (field.isDetonated() || flagsCount == getNumberOfMines()) {
+            return;
+        }
+
+        if (!field.getHasFlag()) {
+            field.setHasFlag(true);
+            flagsCount++;
+        } else {
+            field.setHasFlag(false);
+            flagsCount--;
+        }
+
+        int minesLeft = gameType.getNumberOfMines() - flagsCount;
+        owner.getFlagsField().setText(Integer.toString(minesLeft));
+    }
+
     /**
      * Wstawia mine w losowo wybranym miejscu pola
      * @return zwraca false, jesli na wylosowanym polu znajduje sie juz mina
@@ -213,7 +284,7 @@ public class MineField {
         // losujemy wspolrzedne
         int x = (int) Math.floor(Math.random() * getMineFieldWidth());
         int y = (int) Math.floor(Math.random() * getMineFielddHeight());
-        if (!fields[x][y].getHasMine()) {
+        if (!fields[x][y].hasMine()) {
             fields[x][y].setHasMine(true);
             for (int i = -1; i < 2; i++) {
                 for (int j = -1; j < 2; j++) {
@@ -249,88 +320,11 @@ public class MineField {
         Field field = (Field) evt.getSource();
 
         if (evt.getButton() == MouseEvent.BUTTON1) {
-            // nacisnieto lewy przycisk myszy
-
-            // jesli pole ma ustawiona flage
-            if (field.getHasFlag()) {
-                return;
-            }
-
-            if (field.getHasMine()) {
-                // wdepnelismy na mine ;)
-                field.setIsDetonated(true);
-                field.setIcon(GameIcon.MINE_DETONATED.getIcon());
-                gameOver();
-            } else {
-                detonateMine(field);
-            }
-
-            if (detonatedFields == (getMineFieldWidth() * getMineFielddHeight() - getNumberOfMines())) {
-                // jesli odkryto wszystkie niezaminowane pola
-                gameWin();
-            }
-
+            leftMouseButtonClick(field);
         } else if (evt.getButton() == MouseEvent.BUTTON3) {
-            // nacisnieto prawy przycisk myszy
-            // ustawienie/sciagniecie flagi z pola minowego
-
-            // jesli pole zostalo juz zdetonowane
-            if (field.isDetonated()) {
-                return;
-            }
-
-            // jesli postawiono tyle flag ile jest min
-            if (flagsCount == getNumberOfMines()) {
-                return;
-            }
-
-            if (!field.getHasFlag()) {
-                field.setHasFlag(true);
-                flagsCount++;
-            } else {
-                field.setHasFlag(false);
-                flagsCount--;
-            }
-
-            int minesLeft = gameType.getNumberOfMines() - flagsCount;
-            owner.getFlagsField().setText(Integer.toString(minesLeft));
-
+            rightMouseButtonClick(field);
         } else if (evt.getButton() == MouseEvent.BUTTON2) {
-            // nacisnieto srodkowy przycisk myszy
-
-            if (field.isDetonated()) {
-                // jesli pole zostalo juz zdetonowane
-
-                int x = field.getPositionX();
-                int y = field.getPositionY();
-                int mineFlagsCount = 0;
-
-                // liczymy liczbe flag w sasiedztwie
-                for (int i = -1; i < 2; i++) {
-                    for (int j = -1; j < 2; j++) {
-                        if (i == 0 && j == 0) {
-                            continue;
-                        }
-                        if ((x + i >= 0) && (y + j >= 0) && (x + i < getMineFieldWidth()) && (y + j < getMineFielddHeight())) {
-                            if (fields[x + i][y + j].getHasFlag()) {
-                                mineFlagsCount++;
-                            }
-                        }
-                    }
-                }
-
-                // sprawdzamy czy liczba min w sasiedztwie zgadza sie
-                // z liczba postawionych flag
-                if (field.getNeightborMinesCount() == mineFlagsCount) {
-                    // detonujemy sasiednie pola
-                    detonateNeighbourMines(field);
-                }
-
-                if (detonatedFields == (getMineFielddHeight() * getMineFieldWidth() - getNumberOfMines())) {
-                    // jesli odkryto wszystkie niezaminowane pola
-                    gameWin();
-                }
-            }
+            middleMouseButtonClick(field);
         }
     }
 
@@ -341,6 +335,32 @@ public class MineField {
      * @param field pole wokol, ktorego maja zostac wysadzone miny
      */
     private void detonateNeighbourMines(Field field) {
+        for (Field otherField : getNeighbourFieldsFor(field)) {
+            // dobrze postawiona flaga
+            if (otherField.getHasFlag() && otherField.hasMine()) {
+                continue;
+            }
+
+            if (otherField.getHasFlag() && !otherField.hasMine()) {
+                // zle postawiona flaga
+                otherField.setDetonated(true);
+                otherField.setIcon(GameIcon.FLAG_WRONG.getIcon());
+                // w nastepnej iteracji petla natrafi na mine :D
+                // i jebudu !!
+            } else if (!otherField.getHasFlag() && otherField.hasMine()) {
+                // wdepnelismy na mine :/
+                otherField.setDetonated(true);
+                otherField.setIcon(GameIcon.MINE_DETONATED.getIcon());
+                gameOver();
+            } else {
+                detonateMine(otherField);
+            }
+        }
+    }
+
+    private List<Field> getNeighbourFieldsFor(Field field) {
+        List<Field> neighbours = new ArrayList<Field>();
+
         int x = field.getPositionX();
         int y = field.getPositionY();
 
@@ -352,28 +372,12 @@ public class MineField {
 
                 if ((x + i >= 0) && (y + j >= 0) && (x + i < getMineFieldWidth()) && (y + j < getMineFielddHeight())) {
                     Field otherField = fields[x + i][y + j];
-
-                    if (otherField.getHasFlag() && otherField.getHasMine()) {
-                        // dobrze postawiona flaga
-                        continue;
-                    }
-                    if (otherField.getHasFlag() && !otherField.getHasMine()) {
-                        // zle postawiona flaga
-                        otherField.setIsDetonated(true);
-                        otherField.setIcon(GameIcon.FLAG_WRONG.getIcon());
-                        // w nastepnej iteracji petla natrafi na mine :D
-                        // i jebudu !!
-                    } else if (!otherField.getHasFlag() && otherField.getHasMine()) {
-                        // wdepnelismy na mine :/
-                        otherField.setIsDetonated(true);
-                        otherField.setIcon(GameIcon.MINE_DETONATED.getIcon());
-                        gameOver();
-                    } else {
-                        detonateMine(otherField);
-                    }
+                    neighbours.add(otherField);
                 }
             }
         }
+
+        return neighbours;
     }
 
     /**
@@ -387,7 +391,7 @@ public class MineField {
             return;
         }
 
-        field.setIsDetonated(true);
+        field.setDetonated(true);
         detonatedFields++;
         int minesCount = field.getNeightborMinesCount();
         int x = field.getPositionX();
@@ -413,16 +417,9 @@ public class MineField {
             // brak min w poblizu
             field.setEnabled(false);
             // detonujemy sasiednie pola
-            for (int i = -1; i < 2; i++) {
-                for (int j = -1; j < 2; j++) {
-                    if (i == 0 && j == 0) {
-                        continue;
-                    }
-                    if ((x + i >= 0) && (y + j >= 0) && (x + i < getMineFieldWidth()) && (y + j < getMineFielddHeight())) {
-                        Field otherField = fields[x + i][y + j];
-                        detonateMine(otherField);
-                    }
-                }
+
+            for (Field otherField : getNeighbourFieldsFor(field)) {
+                detonateMine(otherField);
             }
         }
 
@@ -463,7 +460,7 @@ public class MineField {
             // jesli pole zostalo juz zdetonowane
             // jesli pole ma ustawiona flage
             // jesli na polu znajduje sie mina
-            if (field.isDetonated() || field.getHasFlag() || field.getHasMine()) {
+            if (field.isDetonated() || field.getHasFlag() || field.hasMine()) {
                 continue;
             }
 

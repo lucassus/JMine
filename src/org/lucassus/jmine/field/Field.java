@@ -65,7 +65,7 @@ public class Field extends JButton {
      * Funkcja zwraca true jesli na danym polu znajduje sie mina
      * @return boolean
      */
-    public boolean getHasMine() {
+    public boolean hasMine() {
         return hasMine;
     }
 
@@ -108,7 +108,7 @@ public class Field extends JButton {
      * @param isDetonated true - jesli pole zostalo zdetonowane
      * false - w przeciwnym przypadku
      */
-    public void setIsDetonated(boolean isDetonated) {
+    public void setDetonated(boolean isDetonated) {
         this.isDetonated = isDetonated;
     }
 
@@ -143,7 +143,7 @@ public class Field extends JButton {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("position x: ").append(positionX).append(", position y: ").append(positionY);
+        sb.append("Mine position x: ").append(positionX).append(", position y: ").append(positionY);
         return sb.toString();
     }
 }
