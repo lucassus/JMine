@@ -14,6 +14,7 @@ import java.util.ResourceBundle;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import org.lucassus.jmine.field.GameIcon;
 
 /**
  *
@@ -115,14 +116,14 @@ public class JMineFrame extends javax.swing.JFrame {
         jButtonNewGame.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/lucassus/jmine/resources/face.gif"))); // NOI18N
         jButtonNewGame.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jButtonNewGame.setPreferredSize(new java.awt.Dimension(28, 28));
-        jButtonNewGame.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonNewGameActionPerformed(evt);
-            }
-        });
         jButtonNewGame.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 jButtonNewGameMousePressed(evt);
+            }
+        });
+        jButtonNewGame.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonNewGameActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();

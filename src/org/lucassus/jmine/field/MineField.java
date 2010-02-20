@@ -1,5 +1,6 @@
 package org.lucassus.jmine.field;
 
+import javax.swing.ImageIcon;
 import org.lucassus.jmine.JMineFrame;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -212,8 +213,8 @@ public class MineField {
 
         owner.getCounterField().setText("0");
         owner.getFlagsField().setText(Integer.toString(gameType.numberOfMines));
-
         owner.getNewGameButton().setIcon(GameIcon.FACE.getIcon());
+
         initializeMineField();
     }
 

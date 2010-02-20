@@ -134,7 +134,7 @@ public class Field extends JButton {
 
         this.hasFlag = hasFlag;
         if (hasFlag) {
-            setIcon(new javax.swing.ImageIcon(getClass().getResource("/JMine/resources/flag.gif")));
+            setIcon(GameIcon.FLAG.getIcon());
         } else {
             setIcon(null);
         }
