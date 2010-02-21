@@ -1,7 +1,6 @@
 package org.lucassus.jmine.field;
 
 import org.lucassus.jmine.JMineFrame;
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
@@ -38,7 +37,9 @@ public class MineField {
      */
     private Field fields[][];
 
-    /** Creates a new instance of MineField */
+    /** Creates a new instance of MineField
+     * @param owner
+     */
     public MineField(JMineFrame owner) {
         flagsCount = 0;
         this.owner = owner;
@@ -54,7 +55,7 @@ public class MineField {
         isGameOver = false;
         flagsCount = 0;
 
-        owner.getCounterField().setText("");
+        owner.getCounterField().setText(null);
         owner.getFlagsField().setText(Integer.toString(gameType.getNumberOfMines()));
         owner.getNewGameButton().setIcon(GameIcon.FACE.getIcon());
 
@@ -376,8 +377,7 @@ public class MineField {
     }
 
     /**
-     * Podpowiedz - rozminowuje losowo wybrane pole, kara za
-     * podpowiedz jest dodanie 10 sekund do stopera
+     * Podpowiedz - rozminowuje losowo wybrane pole
      */
     public void hint() {
         if (isGameOver) {
@@ -403,7 +403,5 @@ public class MineField {
         int position = (int) Math.ceil(Math.random() * fieldsLeft.size());
         Field field = fieldsLeft.get(position);
         field.detonate();
-
-        // TODO dodanie kary
     }
 }

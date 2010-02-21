@@ -1,6 +1,7 @@
 package org.lucassus.jmine.field;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.util.List;
 import javax.swing.JButton;
 
@@ -32,9 +33,9 @@ public class Field extends JButton {
     public Field() {
         super();
 
-        setText("");
+        setText(null);
         setMargin(new java.awt.Insets(0, 0, 0, 0));
-        setPreferredSize(new java.awt.Dimension(mineSize, mineSize));
+        setPreferredSize(new Dimension(mineSize, mineSize));
 
         isDetonated = false;
         hasFlag = false;
@@ -139,8 +140,7 @@ public class Field extends JButton {
 
         setDetonated(true);
         int minesCount = getNeightborMinesCount();
-
-        if (minesCount != 0) {
+        if (minesCount > 0) {
             // w poblizu znajduja sie miny
             setBackground(new java.awt.Color(238, 238, 238));
 

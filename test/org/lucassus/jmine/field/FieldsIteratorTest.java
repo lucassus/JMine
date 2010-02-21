@@ -22,7 +22,7 @@ public class FieldsIteratorTest extends TestCase {
 
         for (int i = 0; i < mineFieldWidth; i++) {
             for (int j = 0; j < mineFieldHeight; j++) {
-                mineFields[i][j] = new Field(i, j);
+                mineFields[i][j] = new Field();
             }
         }
 
