@@ -1,5 +1,6 @@
 package org.lucassus.jmine.field;
 
+import java.util.List;
 import javax.swing.JButton;
 
 /**
@@ -24,41 +25,18 @@ public class Field extends JButton {
      * Okresla czy pole zostalo zdetonowane
      */
     private boolean isDetonated;
-    /**
-     * Pozycja X miny na polu minowym
-     */
-    private int positionX;
-    /**
-     * Pozycja Y miny na polu minowym
-     */
-    private int positionY;
-    /**
-     * Ilosc min w sasiedztwie pola
-     */
-    private int neightborMinesCount;
+    private List<Field> neightborFields;
 
     /** Creates a new instance of Mine */
-    public Field(int positionX, int positionY) {
+    public Field() {
         super();
 
         setText("");
         setMargin(new java.awt.Insets(0, 0, 0, 0));
         setPreferredSize(new java.awt.Dimension(mineSize, mineSize));
 
-        this.positionX = positionX;
-        this.positionY = positionY;
-
         isDetonated = false;
         hasFlag = false;
-        neightborMinesCount = 0;
-    }
-
-    /**
-     * Inkrementuja liczbe min znajdujacych sie w sasiedztwie pola,
-     * procedura wywolywana podczas tworzenia nowego pola minowego
-     */
-    public void incrementNeightborMinesCount() {
-        neightborMinesCount++;
     }
 
     /**
@@ -66,7 +44,14 @@ public class Field extends JButton {
      * @return liczba min znajdujacych sie w sasiedztwie
      */
     public int getNeightborMinesCount() {
-        return neightborMinesCount;
+        int count = 0;
+        for (Field field : neightborFields) {
+            if (field.hasMine) {
+                count++;
+            }
+        }
+
+        return count;
     }
 
     /**
@@ -79,27 +64,11 @@ public class Field extends JButton {
 
     /**
      * Uzbraja/rozbraja komorke pola minowego
-     * @param true jesli na polu ma znajdowac sie mina.
+     * @param  hasMine true jesli na polu ma znajdowac sie mina.
      * false w przeciwnym przypadku
      */
     public void setHasMine(boolean hasMine) {
         this.hasMine = hasMine;
-    }
-
-    /**
-     * Zwraca pozycje X miny na polu minowym
-     * @return int
-     */
-    public int getPositionX() {
-        return positionX;
-    }
-
-    /**
-     * Zwraca pozycje Y minu na polu minowym
-     * @return int
-     */
-    public int getPositionY() {
-        return positionY;
     }
 
     /**
@@ -143,10 +112,17 @@ public class Field extends JButton {
         }
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Mine position x: ").append(positionX).append(", position y: ").append(positionY);
-        return sb.toString();
+    /**
+     * @return the neightborMines
+     */
+    public List<Field> getNeightborFields() {
+        return neightborFields;
+    }
+
+    /**
+     * @param neightborFields the neightborMines to set
+     */
+    public void setNeightborFields(List<Field> neightborFields) {
+        this.neightborFields = neightborFields;
     }
 }

@@ -3,6 +3,7 @@ package org.lucassus.jmine.field;
 import org.lucassus.jmine.JMineFrame;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
+import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -166,18 +167,15 @@ public class MineField {
         fields = new Field[getMineFieldWidth()][getMineFielddHeight()];
         for (int i = 0; i < getMineFieldWidth(); i++) {
             for (int j = 0; j < getMineFielddHeight(); j++) {
-                Field field = new Field(i, j) {
+                Field field = new Field();
+                field.addMouseListener(new MouseAdapter() {
 
-                    {
-                        addMouseListener(new MouseAdapter() {
-
-                            @Override
-                            public void mouseClicked(MouseEvent evt) {
-                                mouseClick(evt);
-                            }
-                        });
+                    @Override
+                    public void mouseClicked(MouseEvent evt) {
+                        mouseClick(evt);
                     }
-                };
+                });
+
                 fields[i][j] = field;
 
                 GridBagConstraints gridBagConstraints = new GridBagConstraints();
@@ -186,6 +184,12 @@ public class MineField {
 
                 jPanelMineField.add(field, gridBagConstraints);
             }
+        }
+
+        FieldsIterator iterator = new FieldsIterator(fields);
+        while (iterator.hasNext()) {
+            Field field = iterator.next();
+            field.setNeightborFields(getNeighbourFieldsFor(field));
         }
 
         // losujemy miny
@@ -219,7 +223,7 @@ public class MineField {
 
             // liczymy liczbe flag w sasiedztwie
             int neighbourFlagsCount = 0;
-            for (Field otherField : getNeighbourFieldsFor(field)) {
+            for (Field otherField : field.getNeightborFields()) {
                 if (otherField.hasFlag()) {
                     neighbourFlagsCount++;
                 }
@@ -267,14 +271,9 @@ public class MineField {
         int x = (int) Math.floor(Math.random() * getMineFieldWidth());
         int y = (int) Math.floor(Math.random() * getMineFielddHeight());
         Field field = fields[x][y];
-        
+
         if (!field.hasMine()) {
             field.setHasMine(true);
-
-            for (Field otherField : getNeighbourFieldsFor(field)) {
-                otherField.incrementNeightborMinesCount();
-            }
-
             return true;
         } else {
             // jesli na polu znajduje sie juz mina
@@ -313,7 +312,7 @@ public class MineField {
      * @param field pole wokol, ktorego maja zostac wysadzone miny
      */
     private void detonateNeighbourMines(Field field) {
-        for (Field otherField : getNeighbourFieldsFor(field)) {
+        for (Field otherField : field.getNeightborFields()) {
             // dobrze postawiona flaga
             if (otherField.hasFlag() && otherField.hasMine()) {
                 continue;
@@ -339,8 +338,9 @@ public class MineField {
     private List<Field> getNeighbourFieldsFor(Field field) {
         List<Field> neighbours = new ArrayList<Field>();
 
-        int x = field.getPositionX();
-        int y = field.getPositionY();
+        Point position = findPositionFor(field);
+        int x = (int) position.getX();
+        int y = (int) position.getY();
 
         for (int i = -1; i < 2; i++) {
             for (int j = -1; j < 2; j++) {
@@ -358,6 +358,19 @@ public class MineField {
         return neighbours;
     }
 
+    private Point findPositionFor(Field field) {
+        Point position = new Point();
+        for (int i = 0; i < getMineFieldWidth(); i++) {
+            for (int j = 0; j < getMineFielddHeight(); j++) {
+                if (fields[i][j] == field) {
+                    position.setLocation(i, j);
+                }
+            }
+        }
+
+        return position;
+    }
+
     /**
      * Rozminowuje komorke pola minowego
      * @param komorka pola minowego do wysadzenia ;)
@@ -372,8 +385,6 @@ public class MineField {
         field.setDetonated(true);
         detonatedFields++;
         int minesCount = field.getNeightborMinesCount();
-        int x = field.getPositionX();
-        int y = field.getPositionY();
 
         if (minesCount != 0) {
             // w poblizu znajduja sie miny
@@ -396,7 +407,7 @@ public class MineField {
             field.setEnabled(false);
             // detonujemy sasiednie pola
 
-            for (Field otherField : getNeighbourFieldsFor(field)) {
+            for (Field otherField : field.getNeightborFields()) {
                 detonateMine(otherField);
             }
         }
@@ -413,7 +424,7 @@ public class MineField {
 
     /**
      * Ustawia rodzaj gry
-     * @param rodzaj gry
+     * @param gameType rodzaj gry
      */
     public void setGameType(GameType gameType) {
         this.gameType = gameType;
@@ -424,8 +435,6 @@ public class MineField {
      * podpowiedz jest dodanie 10 sekund do stopera
      */
     public void hint() {
-
-        // jesli gra zostala zakonczona
         if (isGameOver) {
             return;
         }
