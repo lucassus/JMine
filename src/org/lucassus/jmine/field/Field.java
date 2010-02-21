@@ -9,6 +9,10 @@ import javax.swing.JButton;
 public class Field extends JButton {
 
     /**
+     * Rozmiar przycisku z mina (w pikselach)
+     */
+    private final int mineSize = 20;
+    /**
      * Okresla czy na danym polu znajduje sie mina
      */
     private boolean hasMine;
@@ -36,6 +40,10 @@ public class Field extends JButton {
     /** Creates a new instance of Mine */
     public Field(int positionX, int positionY) {
         super();
+
+        setText("");
+        setMargin(new java.awt.Insets(0, 0, 0, 0));
+        setPreferredSize(new java.awt.Dimension(mineSize, mineSize));
 
         this.positionX = positionX;
         this.positionY = positionY;
@@ -116,7 +124,7 @@ public class Field extends JButton {
      * Zwraca true, jesli pole zostalo oznaczone
      * @return boolean
      */
-    public boolean getHasFlag() {
+    public boolean hasFlag() {
         return hasFlag;
     }
 
@@ -126,13 +134,8 @@ public class Field extends JButton {
      * false - w przeciwnym przypadku
      */
     public void setHasFlag(boolean hasFlag) {
-
-        // jesli pole zostalo zdetonowane
-        if (isDetonated) {
-            return;
-        }
-
         this.hasFlag = hasFlag;
+
         if (hasFlag) {
             setIcon(GameIcon.FLAG.getIcon());
         } else {

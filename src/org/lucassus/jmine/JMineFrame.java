@@ -326,6 +326,7 @@ public class JMineFrame extends javax.swing.JFrame {
 	private void jMenuItemAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAboutActionPerformed
             new JDialogAbout(this, true).setVisible(true);
 	}//GEN-LAST:event_jMenuItemAboutActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroupGameType;
     private javax.swing.ButtonGroup buttonGroupLanguage;
