@@ -140,9 +140,9 @@ public class MineField {
         jPanelMineField.removeAll();
 
         // tworzymy przeciski reprezentujace komorki pola
-        fields = new Field[gameType.getMineFieldWidth()][gameType.getMineFiledHeight()];
+        fields = new Field[gameType.getMineFieldWidth()][gameType.getMineFieldHeight()];
         for (int i = 0; i < gameType.getMineFieldWidth(); i++) {
-            for (int j = 0; j < gameType.getMineFiledHeight(); j++) {
+            for (int j = 0; j < gameType.getMineFieldHeight(); j++) {
                 Field field = new Field();
                 field.addMouseListener(new MouseAdapter() {
 
@@ -188,7 +188,7 @@ public class MineField {
         } else {
             detonateMine(field);
         }
-        if (detonatedFields == (gameType.getMineFieldWidth() * gameType.getMineFiledHeight() - gameType.getNumberOfMines())) {
+        if (detonatedFields == (gameType.getMineFieldWidth() * gameType.getMineFieldHeight() - gameType.getNumberOfMines())) {
             // jesli odkryto wszystkie niezaminowane pola
             winGame();
         }
@@ -211,7 +211,7 @@ public class MineField {
                 // detonujemy sasiednie pola
                 detonateNeighbourMines(field);
             }
-            if (detonatedFields == (gameType.getMineFieldWidth() * gameType.getMineFiledHeight() - gameType.getNumberOfMines())) {
+            if (detonatedFields == (gameType.getMineFieldWidth() * gameType.getMineFieldHeight() - gameType.getNumberOfMines())) {
                 // jesli odkryto wszystkie niezaminowane pola
                 winGame();
             }
@@ -245,7 +245,7 @@ public class MineField {
     private boolean setMine() {
         // losujemy wspolrzedne
         int x = (int) Math.floor(Math.random() * gameType.getMineFieldWidth());
-        int y = (int) Math.floor(Math.random() * gameType.getMineFiledHeight());
+        int y = (int) Math.floor(Math.random() * gameType.getMineFieldHeight());
         Field field = fields[x][y];
 
         if (!field.hasMine()) {
@@ -324,7 +324,7 @@ public class MineField {
                     continue;
                 }
 
-                if ((x + i >= 0) && (y + j >= 0) && (x + i < gameType.getMineFieldWidth()) && (y + j < gameType.getMineFiledHeight())) {
+                if ((x + i >= 0) && (y + j >= 0) && (x + i < gameType.getMineFieldWidth()) && (y + j < gameType.getMineFieldHeight())) {
                     Field otherField = fields[x + i][y + j];
                     neighbours.add(otherField);
                 }
@@ -337,7 +337,7 @@ public class MineField {
     private Point findPositionFor(Field field) {
         Point position = new Point();
         for (int i = 0; i < gameType.getMineFieldWidth(); i++) {
-            for (int j = 0; j < gameType.getMineFiledHeight(); j++) {
+            for (int j = 0; j < gameType.getMineFieldHeight(); j++) {
                 if (fields[i][j] == field) {
                     position.setLocation(i, j);
                 }

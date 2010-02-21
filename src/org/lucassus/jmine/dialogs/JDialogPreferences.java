@@ -79,7 +79,7 @@ public class JDialogPreferences extends javax.swing.JDialog {
 
     private void initializeSliders(GameType gameType) {
         jSliderMineFieldWidth.setValue(gameType.getMineFieldWidth());
-        jSliderMineFieldHeight.setValue(gameType.getMineFiledHeight());
+        jSliderMineFieldHeight.setValue(gameType.getMineFieldHeight());
         jSliderNumberOfMines.setValue(gameType.getNumberOfMines());
     }
 

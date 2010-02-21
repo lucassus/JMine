@@ -29,7 +29,7 @@ public enum GameType {
         return mineFieldWidth;
     }
 
-    public int getMineFiledHeight() {
+    public int getMineFieldHeight() {
         return mineFieldHeight;
     }
 
