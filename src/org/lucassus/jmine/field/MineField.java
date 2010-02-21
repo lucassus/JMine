@@ -2,7 +2,6 @@ package org.lucassus.jmine.field;
 
 import org.lucassus.jmine.JMineFrame;
 import java.awt.GridBagConstraints;
-import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ public class MineField {
     /**
      * Tablica przechowujaca komorki pola minowego
      */
-    private Field fields[][];
+    private List<Field> fields;
 
     /** Creates a new instance of MineField
      * @param owner
@@ -83,10 +82,7 @@ public class MineField {
         owner.getNewGameButton().setIcon(GameIcon.FACE_DEAD.getIcon());
 
         // pokazujemy wszystkie miny
-        FieldsIterator iterator = new FieldsIterator(fields);
-        while (iterator.hasNext()) {
-            Field field = iterator.next();
-
+        for (Field field : fields) {
             if (field.isDetonated()) {
                 continue;
             }
@@ -114,9 +110,7 @@ public class MineField {
     private boolean isGameWin() {
         int detonatedFields = 0;
 
-        FieldsIterator iterator = new FieldsIterator(fields);
-        while (iterator.hasNext()) {
-            Field field = iterator.next();
+        for (Field field : fields) {
             if (field.isDetonated()) {
                 detonatedFields++;
             }
@@ -132,11 +126,9 @@ public class MineField {
         isGameOver = true;
 
         // oflagujemy pozostawione nieoflagowane miny
-        FieldsIterator iterator = new FieldsIterator(fields);
-        while (iterator.hasNext()) {
-            Field field = iterator.next();
+        for (Field field : fields) {
+            // stawiamy flage
             if (!field.isDetonated() && !field.hasFlag()) {
-                // stawiamy flage
                 field.setIcon(GameIcon.FLAG.getIcon());
             }
         }
@@ -153,9 +145,9 @@ public class MineField {
         jPanelMineField.removeAll();
 
         // tworzymy przeciski reprezentujace komorki pola
-        fields = new Field[gameType.getMineFieldWidth()][gameType.getMineFieldHeight()];
-        for (int i = 0; i < gameType.getMineFieldWidth(); i++) {
-            for (int j = 0; j < gameType.getMineFieldHeight(); j++) {
+        fields = new ArrayList<Field>(gameType.getFieldsCount());
+        for (int i = 0; i < gameType.getMineFieldHeight(); i++) {
+            for (int j = 0; j < gameType.getMineFieldWidth(); j++) {
                 Field field = new Field();
                 field.addMouseListener(new MouseAdapter() {
 
@@ -165,7 +157,7 @@ public class MineField {
                     }
                 });
 
-                fields[i][j] = field;
+                fields.add(field);
 
                 GridBagConstraints gridBagConstraints = new GridBagConstraints();
                 gridBagConstraints.gridx = i;
@@ -175,9 +167,7 @@ public class MineField {
             }
         }
 
-        FieldsIterator iterator = new FieldsIterator(fields);
-        while (iterator.hasNext()) {
-            Field field = iterator.next();
+        for (Field field : fields) {
             field.setNeightborFields(getNeighbourFieldsFor(field));
         }
 
@@ -257,9 +247,8 @@ public class MineField {
      */
     private boolean setMine() {
         // losujemy wspolrzedne
-        int x = (int) Math.floor(Math.random() * gameType.getMineFieldWidth());
-        int y = (int) Math.floor(Math.random() * gameType.getMineFieldHeight());
-        Field field = fields[x][y];
+        int n = (int) Math.ceil(Math.random() * gameType.getFieldsCount() - 1);
+        Field field = fields.get(n);
 
         if (!field.hasMine()) {
             field.setHasMine(true);
@@ -327,9 +316,9 @@ public class MineField {
     private List<Field> getNeighbourFieldsFor(Field field) {
         List<Field> neighbours = new ArrayList<Field>();
 
-        Point position = findPositionFor(field);
-        int x = (int) position.getX();
-        int y = (int) position.getY();
+        int position = fields.indexOf(field);
+        int x = position % gameType.getMineFieldWidth();
+        int y = position / gameType.getMineFieldHeight();
 
         for (int i = -1; i < 2; i++) {
             for (int j = -1; j < 2; j++) {
@@ -338,26 +327,14 @@ public class MineField {
                 }
 
                 if ((x + i >= 0) && (y + j >= 0) && (x + i < gameType.getMineFieldWidth()) && (y + j < gameType.getMineFieldHeight())) {
-                    Field otherField = fields[x + i][y + j];
+                    int pos = (y + j) * gameType.getMineFieldHeight() + (x + i);
+                    Field otherField = fields.get(pos);
                     neighbours.add(otherField);
                 }
             }
         }
 
         return neighbours;
-    }
-
-    private Point findPositionFor(Field field) {
-        Point position = new Point();
-        for (int i = 0; i < gameType.getMineFieldWidth(); i++) {
-            for (int j = 0; j < gameType.getMineFieldHeight(); j++) {
-                if (fields[i][j] == field) {
-                    position.setLocation(i, j);
-                }
-            }
-        }
-
-        return position;
     }
 
     /**
@@ -385,9 +362,7 @@ public class MineField {
         }
 
         List<Field> fieldsLeft = new ArrayList<Field>();
-        FieldsIterator iterator = new FieldsIterator(fields);
-        while (iterator.hasNext()) {
-            Field field = iterator.next();
+        for (Field field : fields) {
 
             // jesli pole zostalo juz zdetonowane
             // jesli pole ma ustawiona flage
