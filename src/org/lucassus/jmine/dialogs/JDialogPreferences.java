@@ -46,6 +46,8 @@ public class JDialogPreferences extends javax.swing.JDialog {
 
     /**
      * Creates new form JDialogPreferences
+     * @param parent
+     * @param modal
      */
     public JDialogPreferences(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -309,22 +311,22 @@ public class JDialogPreferences extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
 	private void jRadioButtonUserGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonUserGameActionPerformed
-            initializeSliders(mineField.getGameType());
+            initializeSliders(GameType.USER);
             setUserSettingsEnabled(true);
 	}//GEN-LAST:event_jRadioButtonUserGameActionPerformed
 
 	private void jRadioButtonExpertGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonExpertGameActionPerformed
-            initializeSliders(mineField.getGameType());
+            initializeSliders(GameType.EXPERT);
             setUserSettingsEnabled(false);
 	}//GEN-LAST:event_jRadioButtonExpertGameActionPerformed
 
 	private void jRadioButtonIntermediateGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonIntermediateGameActionPerformed
-            initializeSliders(mineField.getGameType());
+            initializeSliders(GameType.INTERMEDIATE);
             setUserSettingsEnabled(false);
 	}//GEN-LAST:event_jRadioButtonIntermediateGameActionPerformed
 
 	private void jRadioButtonNoviceGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonNoviceGameActionPerformed
-            initializeSliders(mineField.getGameType());
+            initializeSliders(GameType.NOVICE);
             setUserSettingsEnabled(false);
 	}//GEN-LAST:event_jRadioButtonNoviceGameActionPerformed
 
