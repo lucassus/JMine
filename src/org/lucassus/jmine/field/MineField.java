@@ -53,30 +53,6 @@ public class MineField {
     }
 
     /**
-     * Funkcja zwraca dlugosc pola minowego
-     * @return dlugosc pola minowego
-     */
-    public int getMineFieldWidth() {
-        return gameType.getMineFieldWidth();
-    }
-
-    /**
-     * Funkcja zwraca wysokosc pola minowego
-     * @return wysokosc pola minowego
-     */
-    public int getMineFielddHeight() {
-        return gameType.getMineFiledHeight();
-    }
-
-    /**
-     * Zwraca liczbe min znajdujacych sie na polu minowym
-     * @return liczba min znajdujacych sie na polu minowym
-     */
-    public int getNumberOfMines() {
-        return gameType.getNumberOfMines();
-    }
-
-    /**
      * Rozpoczyna/resetuje gre
      */
     public void newGame() {
@@ -164,9 +140,9 @@ public class MineField {
         jPanelMineField.removeAll();
 
         // tworzymy przeciski reprezentujace komorki pola
-        fields = new Field[getMineFieldWidth()][getMineFielddHeight()];
-        for (int i = 0; i < getMineFieldWidth(); i++) {
-            for (int j = 0; j < getMineFielddHeight(); j++) {
+        fields = new Field[gameType.getMineFieldWidth()][gameType.getMineFiledHeight()];
+        for (int i = 0; i < gameType.getMineFieldWidth(); i++) {
+            for (int j = 0; j < gameType.getMineFiledHeight(); j++) {
                 Field field = new Field();
                 field.addMouseListener(new MouseAdapter() {
 
@@ -193,7 +169,7 @@ public class MineField {
         }
 
         // losujemy miny
-        for (int i = 0; i < getNumberOfMines(); i++) {
+        for (int i = 0; i < gameType.getNumberOfMines(); i++) {
             setMine();	// wstawiamy mine
         }
 
@@ -212,7 +188,7 @@ public class MineField {
         } else {
             detonateMine(field);
         }
-        if (detonatedFields == (getMineFieldWidth() * getMineFielddHeight() - getNumberOfMines())) {
+        if (detonatedFields == (gameType.getMineFieldWidth() * gameType.getMineFiledHeight() - gameType.getNumberOfMines())) {
             // jesli odkryto wszystkie niezaminowane pola
             winGame();
         }
@@ -235,7 +211,7 @@ public class MineField {
                 // detonujemy sasiednie pola
                 detonateNeighbourMines(field);
             }
-            if (detonatedFields == (getMineFielddHeight() * getMineFieldWidth() - getNumberOfMines())) {
+            if (detonatedFields == (gameType.getMineFieldWidth() * gameType.getMineFiledHeight() - gameType.getNumberOfMines())) {
                 // jesli odkryto wszystkie niezaminowane pola
                 winGame();
             }
@@ -245,7 +221,7 @@ public class MineField {
     private void rightMouseButtonClick(Field field) {
         // ustawienie/sciagniecie flagi z pola minowego
         // jesli pole zostalo juz zdetonowane
-        if (field.isDetonated() || getNumberOfMines() == flagsCount) {
+        if (field.isDetonated() || gameType.getNumberOfMines() == flagsCount) {
             return;
         }
 
@@ -268,8 +244,8 @@ public class MineField {
      */
     private boolean setMine() {
         // losujemy wspolrzedne
-        int x = (int) Math.floor(Math.random() * getMineFieldWidth());
-        int y = (int) Math.floor(Math.random() * getMineFielddHeight());
+        int x = (int) Math.floor(Math.random() * gameType.getMineFieldWidth());
+        int y = (int) Math.floor(Math.random() * gameType.getMineFiledHeight());
         Field field = fields[x][y];
 
         if (!field.hasMine()) {
@@ -348,7 +324,7 @@ public class MineField {
                     continue;
                 }
 
-                if ((x + i >= 0) && (y + j >= 0) && (x + i < getMineFieldWidth()) && (y + j < getMineFielddHeight())) {
+                if ((x + i >= 0) && (y + j >= 0) && (x + i < gameType.getMineFieldWidth()) && (y + j < gameType.getMineFiledHeight())) {
                     Field otherField = fields[x + i][y + j];
                     neighbours.add(otherField);
                 }
@@ -360,8 +336,8 @@ public class MineField {
 
     private Point findPositionFor(Field field) {
         Point position = new Point();
-        for (int i = 0; i < getMineFieldWidth(); i++) {
-            for (int j = 0; j < getMineFielddHeight(); j++) {
+        for (int i = 0; i < gameType.getMineFieldWidth(); i++) {
+            for (int j = 0; j < gameType.getMineFiledHeight(); j++) {
                 if (fields[i][j] == field) {
                     position.setLocation(i, j);
                 }
