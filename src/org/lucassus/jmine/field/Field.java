@@ -1,5 +1,6 @@
 package org.lucassus.jmine.field;
 
+import java.awt.Color;
 import java.util.List;
 import javax.swing.JButton;
 
@@ -124,5 +125,45 @@ public class Field extends JButton {
      */
     public void setNeightborFields(List<Field> neightborFields) {
         this.neightborFields = neightborFields;
+    }
+
+    /**
+     * Rozminowuje komorke pola minowego
+     */
+    public void detonate() {
+
+        // jesli pole zostalo juz zdetonowane
+        if (isDetonated()) {
+            return;
+        }
+
+        setDetonated(true);
+        int minesCount = getNeightborMinesCount();
+
+        if (minesCount != 0) {
+            // w poblizu znajduja sie miny
+            setBackground(new java.awt.Color(238, 238, 238));
+
+            Color color = new Color(0, 0, 0);
+            // okreslenie koloru cyfry
+            if (minesCount == 1) {
+                color = new Color(0, 0, 255);
+            } else if (minesCount == 2) {
+                color = new Color(0, 128, 0);
+            } else if (minesCount >= 3) {
+                color = new Color(255, 0, 0);
+            }
+
+            setForeground(color);
+            setText(Integer.toString(minesCount));
+        } else {
+            // brak min w poblizu
+            setEnabled(false);
+
+            // detonujemy sasiednie pola
+            for (Field otherField : getNeightborFields()) {
+                otherField.detonate();
+            }
+        }
     }
 }

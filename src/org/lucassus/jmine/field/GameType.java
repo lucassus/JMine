@@ -57,4 +57,8 @@ public enum GameType {
             throw new GameTypeException();
         }
     }
+
+    public int getFieldsCount() {
+        return getMineFieldWidth() * getMineFieldHeight();
+    }
 }

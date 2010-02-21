@@ -21,10 +21,6 @@ public class MineField {
      */
     private boolean isGameOver;
     /**
-     * Liczba zdetonowanych pol pola minowego
-     */
-    private int detonatedFields;
-    /**
      * Liczba postawionych flag
      */
     private int flagsCount;
@@ -45,7 +41,6 @@ public class MineField {
     /** Creates a new instance of MineField */
     public MineField(JMineFrame owner) {
         flagsCount = 0;
-        detonatedFields = 0;
         this.owner = owner;
         gameType = GameType.NOVICE;
 
@@ -57,7 +52,6 @@ public class MineField {
      */
     public void newGame() {
         isGameOver = false;
-        detonatedFields = 0;
         flagsCount = 0;
 
         owner.getCounterField().setText("");
@@ -117,7 +111,17 @@ public class MineField {
      * @return
      */
     private boolean isGameWin() {
-        return detonatedFields == (gameType.getMineFieldWidth() * gameType.getMineFieldHeight() - gameType.getNumberOfMines());
+        int detonatedFields = 0;
+
+        FieldsIterator iterator = new FieldsIterator(fields);
+        while (iterator.hasNext()) {
+            Field field = iterator.next();
+            if (field.isDetonated()) {
+                detonatedFields++;
+            }
+        }
+
+        return detonatedFields == (gameType.getFieldsCount() - gameType.getNumberOfMines());
     }
 
     /**
@@ -194,7 +198,7 @@ public class MineField {
             field.setIcon(GameIcon.MINE_DETONATED.getIcon());
             gameOver();
         } else {
-            detonateMine(field);
+            field.detonate();
 
             if (isGameWin()) {
                 winGame();
@@ -217,7 +221,7 @@ public class MineField {
             // z liczba postawionych flag
             if (field.getNeightborMinesCount() == neighbourFlagsCount) {
                 // detonujemy sasiednie pola
-                detonateNeighbourMines(field);
+                detonateNeighbours(field);
 
                 if (isGameWin()) {
                     winGame();
@@ -295,7 +299,7 @@ public class MineField {
      * przyciskiem myszy
      * @param field pole wokol, ktorego maja zostac wysadzone miny
      */
-    private void detonateNeighbourMines(Field field) {
+    private void detonateNeighbours(Field field) {
         for (Field otherField : field.getNeightborFields()) {
             // dobrze postawiona flaga
             if (otherField.hasFlag() && otherField.hasMine()) {
@@ -314,7 +318,7 @@ public class MineField {
                 otherField.setIcon(GameIcon.MINE_DETONATED.getIcon());
                 gameOver();
             } else {
-                detonateMine(otherField);
+                otherField.detonate();
             }
         }
     }
@@ -353,49 +357,6 @@ public class MineField {
         }
 
         return position;
-    }
-
-    /**
-     * Rozminowuje komorke pola minowego
-     * @param komorka pola minowego do wysadzenia ;)
-     */
-    private void detonateMine(Field field) {
-
-        // jesli pole zostalo juz zdetonowane
-        if (field.isDetonated()) {
-            return;
-        }
-
-        field.setDetonated(true);
-        detonatedFields++;
-        int minesCount = field.getNeightborMinesCount();
-
-        if (minesCount != 0) {
-            // w poblizu znajduja sie miny
-            field.setBackground(new java.awt.Color(238, 238, 238));
-
-            Color color = new Color(0, 0, 0);
-            // okreslenie koloru cyfry
-            if (minesCount == 1) {
-                color = new Color(0, 0, 255);
-            } else if (minesCount == 2) {
-                color = new Color(0, 128, 0);
-            } else if (minesCount >= 3) {
-                color = new Color(255, 0, 0);
-            }
-
-            field.setForeground(color);
-            field.setText(Integer.toString(minesCount));
-        } else {
-            // brak min w poblizu
-            field.setEnabled(false);
-            // detonujemy sasiednie pola
-
-            for (Field otherField : field.getNeightborFields()) {
-                detonateMine(otherField);
-            }
-        }
-
     }
 
     /**
@@ -440,7 +401,8 @@ public class MineField {
 
         // losowanie pola do zdetonowania
         int position = (int) Math.ceil(Math.random() * fieldsLeft.size());
-        detonateMine(fieldsLeft.get(position));
+        Field field = fieldsLeft.get(position);
+        field.detonate();
 
         // TODO dodanie kary
     }
