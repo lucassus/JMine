@@ -113,6 +113,14 @@ public class MineField {
     }
 
     /**
+     * Sprawdza czy odkryto wszystkie niezaminowane pola
+     * @return
+     */
+    private boolean isGameWin() {
+        return detonatedFields == (gameType.getMineFieldWidth() * gameType.getMineFieldHeight() - gameType.getNumberOfMines());
+    }
+
+    /**
      * Procedura wywolywana jesli gra zakonczyla sie zwycienstwem
      */
     private void winGame() {
@@ -187,10 +195,10 @@ public class MineField {
             gameOver();
         } else {
             detonateMine(field);
-        }
-        if (detonatedFields == (gameType.getMineFieldWidth() * gameType.getMineFieldHeight() - gameType.getNumberOfMines())) {
-            // jesli odkryto wszystkie niezaminowane pola
-            winGame();
+
+            if (isGameWin()) {
+                winGame();
+            }
         }
     }
 
@@ -210,10 +218,10 @@ public class MineField {
             if (field.getNeightborMinesCount() == neighbourFlagsCount) {
                 // detonujemy sasiednie pola
                 detonateNeighbourMines(field);
-            }
-            if (detonatedFields == (gameType.getMineFieldWidth() * gameType.getMineFieldHeight() - gameType.getNumberOfMines())) {
-                // jesli odkryto wszystkie niezaminowane pola
-                winGame();
+
+                if (isGameWin()) {
+                    winGame();
+                }
             }
         }
     }
