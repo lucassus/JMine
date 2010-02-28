@@ -177,4 +177,16 @@ public class Field extends JButton {
             }
         }
     }
+
+    public boolean hasMineWithFlag() {
+        return hasMine() && hasFlag();
+    }
+
+    public boolean hasFlagWithoutMine() {
+        return !hasMine() && hasFlag();
+    }
+
+    public boolean hasMineWithoutFlag() {
+        return !hasFlag() && hasMine();
+    }
 }

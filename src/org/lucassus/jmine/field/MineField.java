@@ -4,6 +4,7 @@ import java.awt.GridBagConstraints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.swing.JPanel;
 
@@ -52,6 +53,15 @@ public class MineField {
         }
 
         return detonatedFieldsCount;
+    }
+
+    private void randomizeMines() {
+        List<Field> fieldsWithMine = new ArrayList<Field>(fields);
+        Collections.shuffle(fieldsWithMine);
+        fieldsWithMine = fieldsWithMine.subList(0, gameType.getNumberOfMines());
+        for (Field field : fieldsWithMine) {
+            field.setHasMine(true);
+        }
     }
 
     private void showMines() {
@@ -105,6 +115,7 @@ public class MineField {
      * @param panelMineField
      */
     public void initializeMineField(JPanel panelMineField) {
+        flagsCount = 0;
         panelMineField.removeAll();
 
         // tworzymy przeciski reprezentujace komorki pola
@@ -130,18 +141,13 @@ public class MineField {
             }
         }
 
-        // set neighbour fields
+        // set neighbour fields for each field
         for (Field field : fields) {
             List<Field> neighbourFields = getNeighbourFieldsFor(field);
             field.setNeightborFields(neighbourFields);
         }
 
-        // losujemy miny
-        for (int i = 0; i < gameType.getNumberOfMines(); i++) {
-            setMine();	// wstawiamy mine
-        }
-
-        flagsCount = 0;
+        randomizeMines();
     }
 
     private void leftMouseButtonClick(Field field) {
@@ -195,29 +201,6 @@ public class MineField {
 
         int minesLeft = gameType.getNumberOfMines() - flagsCount;
         observer.updateMinesLeftCount(minesLeft);
-//        owner.getFlagsField().setText(Integer.toString(minesLeft));
-    }
-
-    /**
-     * Wstawia mine w losowo wybranym miejscu pola
-     * @return zwraca false, jesli na wylosowanym polu znajduje sie juz mina
-     * true jesli udalo sie wstawic mine
-     */
-    private boolean setMine() {
-        // losujemy wspolrzedne
-        int n = (int) Math.ceil(Math.random() * gameType.getFieldsCount() - 1);
-        Field field = fields.get(n);
-
-        if (!field.hasMine()) {
-            field.setHasMine(true);
-            return true;
-        } else {
-            // jesli na polu znajduje sie juz mina
-            // rekurencyjnie wywolujemy funkcje
-            setMine();
-        }
-
-        return false;
     }
 
     /**
@@ -246,17 +229,17 @@ public class MineField {
     private void detonateNeighbours(Field field) {
         for (Field otherField : field.getNeightborFields()) {
             // dobrze postawiona flaga
-            if (otherField.hasFlag() && otherField.hasMine()) {
+            if (otherField.hasMineWithFlag()) {
                 continue;
             }
 
-            if (otherField.hasFlag() && !otherField.hasMine()) {
+            if (otherField.hasFlagWithoutMine()) {
                 // zle postawiona flaga
                 otherField.setDetonated(true);
                 otherField.setIcon(GameIcon.FLAG_WRONG.getIcon());
                 // w nastepnej iteracji petla natrafi na mine :D
                 // i jebudu !!
-            } else if (!otherField.hasFlag() && otherField.hasMine()) {
+            } else if (otherField.hasMineWithoutFlag()) {
                 // wdepnelismy na mine :/
                 otherField.setDetonated(true);
                 otherField.setIcon(GameIcon.MINE_DETONATED.getIcon());
@@ -314,9 +297,6 @@ public class MineField {
         List<Field> fieldsLeft = new ArrayList<Field>();
         for (Field field : fields) {
 
-            // jesli pole zostalo juz zdetonowane
-            // jesli pole ma ustawiona flage
-            // jesli na polu znajduje sie mina
             if (field.isDetonated() || field.hasFlag() || field.hasMine()) {
                 continue;
             }
@@ -325,8 +305,8 @@ public class MineField {
         }
 
         // losowanie pola do zdetonowania
-        int position = (int) Math.ceil(Math.random() * fieldsLeft.size());
-        Field field = fieldsLeft.get(position);
+        Collections.shuffle(fieldsLeft);
+        Field field = fieldsLeft.get(0);
         field.detonate();
     }
 
