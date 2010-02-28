@@ -1,6 +1,5 @@
 package org.lucassus.jmine.field;
 
-import org.lucassus.jmine.JMineFrame;
 import java.awt.GridBagConstraints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -15,73 +14,47 @@ import javax.swing.JPanel;
 public class MineField {
 
     /**
-     * true jesli gra sie zakonczyla
-     */
-    private boolean isGameOver;
-    /**
      * Liczba postawionych flag
      */
     private int flagsCount;
     /**
      * Rodzaj gry
-     * @see UserGame
-     * @see NoviceGame
-     * @see IntermediateGame
-     * @see ExpertGame
      */
     private GameType gameType;
-    private JMineFrame owner;
     /**
      * Tablica przechowujaca komorki pola minowego
      */
     private List<Field> fields;
+    private MineFieldObserver observer;
 
-    /** Creates a new instance of MineField
-     * @param owner
+    /**
+     * Creates a new instance of MineField
      */
-    public MineField(JMineFrame owner) {
-        flagsCount = 0;
-        this.owner = owner;
+    public MineField() {
         gameType = GameType.NOVICE;
-
-        newGame();
-    }
-
-    /**
-     * Rozpoczyna/resetuje gre
-     */
-    public void newGame() {
-        isGameOver = false;
-        flagsCount = 0;
-
-        owner.getCounterField().setText(null);
-        owner.getFlagsField().setText(Integer.toString(gameType.getNumberOfMines()));
-        owner.getNewGameButton().setIcon(GameIcon.FACE.getIcon());
-
-        initializeMineField();
-    }
-
-    /**
-     * Rozpoczyna nowa gre
-     * @param gameType rodzaj gry (poziom trudnosci)
-     */
-    public void newGame(GameType gameType) {
-        setGameType(gameType);
-        newGame();
     }
 
     /**
      * Procedura wywolywana jesli gra zakonczyla sie przegrana
      */
     private void gameOver() {
-        if (isGameOver) {
-            return;
-        }
-        isGameOver = true;
-
-        owner.getNewGameButton().setIcon(GameIcon.FACE_DEAD.getIcon());
-
         // pokazujemy wszystkie miny
+        showMines();
+        observer.gameOver();
+    }
+
+    private int getDetonatedFieldsCount() {
+        int detonatedFieldsCount = 0;
+        for (Field field : fields) {
+            if (field.isDetonated()) {
+                detonatedFieldsCount++;
+            }
+        }
+
+        return detonatedFieldsCount;
+    }
+
+    private void showMines() {
         for (Field field : fields) {
             if (field.isDetonated()) {
                 continue;
@@ -107,24 +80,15 @@ public class MineField {
      * Sprawdza czy odkryto wszystkie niezaminowane pola
      * @return
      */
-    private boolean isGameWin() {
-        int detonatedFields = 0;
-
-        for (Field field : fields) {
-            if (field.isDetonated()) {
-                detonatedFields++;
-            }
-        }
-
-        return detonatedFields == (gameType.getFieldsCount() - gameType.getNumberOfMines());
+    private boolean allDetonated() {
+        int detonatedFieldsCount = getDetonatedFieldsCount();
+        return detonatedFieldsCount == (gameType.getFieldsCount() - gameType.getNumberOfMines());
     }
 
     /**
      * Procedura wywolywana jesli gra zakonczyla sie zwycienstwem
      */
     private void winGame() {
-        isGameOver = true;
-
         // oflagujemy pozostawione nieoflagowane miny
         for (Field field : fields) {
             // stawiamy flage
@@ -133,16 +97,15 @@ public class MineField {
             }
         }
 
-        owner.getFlagsField().setText("0");
-        owner.getNewGameButton().setIcon(GameIcon.FACE_WIN.getIcon());
+        observer.gameWin();
     }
 
     /**
      * Tworzy pole minowe
+     * @param panelMineField
      */
-    private void initializeMineField() {
-        JPanel jPanelMineField = owner.getMineFieldPanel();
-        jPanelMineField.removeAll();
+    public void initializeMineField(JPanel panelMineField) {
+        panelMineField.removeAll();
 
         // tworzymy przeciski reprezentujace komorki pola
         fields = new ArrayList<Field>(gameType.getFieldsCount());
@@ -163,12 +126,14 @@ public class MineField {
                 gridBagConstraints.gridx = i;
                 gridBagConstraints.gridy = j;
 
-                jPanelMineField.add(field, gridBagConstraints);
+                panelMineField.add(field, gridBagConstraints);
             }
         }
 
+        // set neighbour fields
         for (Field field : fields) {
-            field.setNeightborFields(getNeighbourFieldsFor(field));
+            List<Field> neighbourFields = getNeighbourFieldsFor(field);
+            field.setNeightborFields(neighbourFields);
         }
 
         // losujemy miny
@@ -176,7 +141,7 @@ public class MineField {
             setMine();	// wstawiamy mine
         }
 
-        owner.pack();
+        flagsCount = 0;
     }
 
     private void leftMouseButtonClick(Field field) {
@@ -191,7 +156,7 @@ public class MineField {
         } else {
             field.detonate();
 
-            if (isGameWin()) {
+            if (allDetonated()) {
                 winGame();
             }
         }
@@ -200,21 +165,13 @@ public class MineField {
     private void middleMouseButtonClick(Field field) {
         if (field.isDetonated() && field.getNeightborMinesCount() > 0) {
 
-            // liczymy liczbe flag w sasiedztwie
-            int neighbourFlagsCount = 0;
-            for (Field otherField : field.getNeightborFields()) {
-                if (otherField.hasFlag()) {
-                    neighbourFlagsCount++;
-                }
-            }
-
             // sprawdzamy czy liczba min w sasiedztwie zgadza sie
             // z liczba postawionych flag
-            if (field.getNeightborMinesCount() == neighbourFlagsCount) {
+            if (field.getNeightborMinesCount() == field.getNeightborFlagsCount()) {
                 // detonujemy sasiednie pola
                 detonateNeighbours(field);
 
-                if (isGameWin()) {
+                if (allDetonated()) {
                     winGame();
                 }
             }
@@ -237,7 +194,8 @@ public class MineField {
         }
 
         int minesLeft = gameType.getNumberOfMines() - flagsCount;
-        owner.getFlagsField().setText(Integer.toString(minesLeft));
+        observer.updateMinesLeftCount(minesLeft);
+//        owner.getFlagsField().setText(Integer.toString(minesLeft));
     }
 
     /**
@@ -267,10 +225,6 @@ public class MineField {
      * @param evt
      */
     private void mouseClick(MouseEvent evt) {
-        if (isGameOver) {
-            return;
-        }
-
         // pole na ktore kliknieto
         Field field = (Field) evt.getSource();
 
@@ -357,10 +311,6 @@ public class MineField {
      * Podpowiedz - rozminowuje losowo wybrane pole
      */
     public void hint() {
-        if (isGameOver) {
-            return;
-        }
-
         List<Field> fieldsLeft = new ArrayList<Field>();
         for (Field field : fields) {
 
@@ -378,5 +328,9 @@ public class MineField {
         int position = (int) Math.ceil(Math.random() * fieldsLeft.size());
         Field field = fieldsLeft.get(position);
         field.detonate();
+    }
+
+    public void attachMineFieldObserver(MineFieldObserver observer) {
+        this.observer = observer;
     }
 }

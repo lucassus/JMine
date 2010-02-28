@@ -56,6 +56,17 @@ public class Field extends JButton {
         return count;
     }
 
+    public int getNeightborFlagsCount() {
+        int count = 0;
+        for (Field field : neightborFields) {
+            if (field.hasFlag()) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
     /**
      * Funkcja zwraca true jesli na danym polu znajduje sie mina
      * @return boolean

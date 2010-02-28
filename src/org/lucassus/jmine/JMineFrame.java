@@ -1,8 +1,3 @@
-/*
- * JMineFrame.java
- *
- * Created on 29 sierpie� 2005, 19:08
- */
 package org.lucassus.jmine;
 
 import org.lucassus.jmine.dialogs.JDialogAbout;
@@ -15,12 +10,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.lucassus.jmine.field.GameIcon;
 import org.lucassus.jmine.field.GameType;
+import org.lucassus.jmine.field.MineFieldObserver;
 
-/**
- *
- * @author  lucassus
- */
-public class JMineFrame extends javax.swing.JFrame {
+public class JMineFrame extends javax.swing.JFrame implements MineFieldObserver {
 
     private MineField mineField;
     private Locale currentLocale;
@@ -32,8 +24,19 @@ public class JMineFrame extends javax.swing.JFrame {
         messages = ResourceBundle.getBundle("org/lucassus/jmine/resources/languages", currentLocale);
         initComponents();
 
-        mineField = new MineField(this);
+        mineField = new MineField();
+        mineField.attachMineFieldObserver(this);
         initCheckBoxes();
+
+        newGame();
+    }
+
+    private void newGame() {
+        mineField.initializeMineField(getMineFieldPanel());
+        String numberOfNimes = Integer.toString(mineField.getGameType().getNumberOfMines()).toString();
+        textFieldMinesLeftCount.setText(numberOfNimes);
+        buttonNewGame.setIcon(GameIcon.FACE.getIcon());
+        this.pack();
     }
 
     public JPanel getMineFieldPanel() {
@@ -52,6 +55,7 @@ public class JMineFrame extends javax.swing.JFrame {
         if (mineField == null) {
             return;
         }
+
         if (mineField.getGameType() == GameType.NOVICE) {
             checkBoxMenuItemGameNovice.setSelected(true);
         } else if (mineField.getGameType() == GameType.INTERMEDIATE) {
@@ -64,7 +68,7 @@ public class JMineFrame extends javax.swing.JFrame {
     }
 
     public JTextField getFlagsField() {
-        return textFieldFlagsCount;
+        return textFieldMinesLeftCount;
     }
 
     public JTextField getCounterField() {
@@ -87,7 +91,7 @@ public class JMineFrame extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         textFieldCounter = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
-        textFieldFlagsCount = new javax.swing.JTextField();
+        textFieldMinesLeftCount = new javax.swing.JTextField();
         panelMineField = new javax.swing.JPanel();
         jMenuBar = new javax.swing.JMenuBar();
         jMenuGame = new javax.swing.JMenu();
@@ -143,11 +147,11 @@ public class JMineFrame extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 30);
         jPanelTop.add(jPanel1, gridBagConstraints);
 
-        textFieldFlagsCount.setEditable(false);
-        textFieldFlagsCount.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        textFieldFlagsCount.setText("0");
-        textFieldFlagsCount.setPreferredSize(new java.awt.Dimension(50, 19));
-        jPanel2.add(textFieldFlagsCount);
+        textFieldMinesLeftCount.setEditable(false);
+        textFieldMinesLeftCount.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        textFieldMinesLeftCount.setText("0");
+        textFieldMinesLeftCount.setPreferredSize(new java.awt.Dimension(50, 19));
+        jPanel2.add(textFieldMinesLeftCount);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
@@ -277,19 +281,23 @@ public class JMineFrame extends javax.swing.JFrame {
 	}//GEN-LAST:event_jMenuItemHintActionPerformed
 
 	private void checkBoxMenuItemGameUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxMenuItemGameUserActionPerformed
-            mineField.newGame(GameType.USER);
+            mineField.setGameType(GameType.USER);
+            newGame();
 	}//GEN-LAST:event_checkBoxMenuItemGameUserActionPerformed
 
 	private void checkBoxMenuItemGameExpertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxMenuItemGameExpertActionPerformed
-            mineField.newGame(GameType.EXPERT);
+            mineField.setGameType(GameType.EXPERT);
+            newGame();
 	}//GEN-LAST:event_checkBoxMenuItemGameExpertActionPerformed
 
 	private void checkBoxMenuItemGameIntermediateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxMenuItemGameIntermediateActionPerformed
-            mineField.newGame(GameType.INTERMEDIATE);
+            mineField.setGameType(GameType.INTERMEDIATE);
+            newGame();
 	}//GEN-LAST:event_checkBoxMenuItemGameIntermediateActionPerformed
 
 	private void checkBoxMenuItemGameNoviceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxMenuItemGameNoviceActionPerformed
-            mineField.newGame(GameType.NOVICE);
+            mineField.setGameType(GameType.NOVICE);
+            newGame();
 	}//GEN-LAST:event_checkBoxMenuItemGameNoviceActionPerformed
 
 	private void buttonNewGameMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonNewGameMousePressed
@@ -299,17 +307,17 @@ public class JMineFrame extends javax.swing.JFrame {
 	}//GEN-LAST:event_buttonNewGameMousePressed
 
 	private void buttonNewGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonNewGameActionPerformed
-            mineField.newGame();
+            newGame();
 	}//GEN-LAST:event_buttonNewGameActionPerformed
 
 	private void jMenuItemNewGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemNewGameActionPerformed
-            mineField.newGame();
+            newGame();
 	}//GEN-LAST:event_jMenuItemNewGameActionPerformed
 
 	private void jMenuItemPreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemPreferencesActionPerformed
             new JDialogPreferences(this, true).setVisible(true);
             initCheckBoxes();
-            mineField.newGame();
+            newGame();
 	}//GEN-LAST:event_jMenuItemPreferencesActionPerformed
 
 	private void checkBoxMenuItemAlwaysOnTopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxMenuItemAlwaysOnTopActionPerformed
@@ -327,7 +335,6 @@ public class JMineFrame extends javax.swing.JFrame {
 	private void jMenuItemAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAboutActionPerformed
             new JDialogAbout(this, true).setVisible(true);
 	}//GEN-LAST:event_jMenuItemAboutActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroupGameType;
     private javax.swing.ButtonGroup buttonGroupLanguage;
@@ -354,6 +361,22 @@ public class JMineFrame extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JPanel panelMineField;
     private javax.swing.JTextField textFieldCounter;
-    private javax.swing.JTextField textFieldFlagsCount;
+    private javax.swing.JTextField textFieldMinesLeftCount;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void updateMinesLeftCount(int minesLeft) {
+        textFieldMinesLeftCount.setText(Integer.toString(minesLeft));
+    }
+
+    @Override
+    public void gameWin() {
+        textFieldMinesLeftCount.setText("0");
+        buttonNewGame.setIcon(GameIcon.FACE_WIN.getIcon());
+    }
+
+    @Override
+    public void gameOver() {
+        buttonNewGame.setIcon(GameIcon.FACE_DEAD.getIcon());
+    }
 }
