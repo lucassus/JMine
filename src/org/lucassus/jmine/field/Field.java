@@ -2,8 +2,11 @@ package org.lucassus.jmine.field;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 import javax.swing.JButton;
+import org.lucassus.jmine.field.observers.FieldObserver;
 
 /**
  * Pojedyncza komorka pola minowego
@@ -27,11 +30,23 @@ public class Field extends JButton {
      * Okresla czy pole zostalo zdetonowane
      */
     private boolean isDetonated;
+    /**
+     * Sąsiednie miny
+     */
     private List<Field> neightborFields;
+    private FieldObserver observer;
 
     /** Creates a new instance of Mine */
     public Field() {
         super();
+
+        addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                mouseClick(evt);
+            }
+        });
 
         setText(null);
         setMargin(new java.awt.Insets(0, 0, 0, 0));
@@ -178,6 +193,94 @@ public class Field extends JButton {
         }
     }
 
+    /**
+     * Obsluguje klikniecie na mine
+     * @param evt
+     */
+    private void mouseClick(MouseEvent evt) {
+        if (evt.getButton() == MouseEvent.BUTTON1) {
+            leftMouseButtonClick();
+        } else if (evt.getButton() == MouseEvent.BUTTON3) {
+            rightMouseButtonClick();
+        } else if (evt.getButton() == MouseEvent.BUTTON2) {
+            middleMouseButtonClick();
+        }
+    }
+
+    /**
+     * Funkcja detonuje sasiednie pola,
+     * funkcja wywolywana jestli uzytwkonik kliknie srodkowym
+     * przyciskiem myszy
+     * @param field pole wokol, ktorego maja zostac wysadzone miny
+     */
+    private void detonateNeighbours() {
+        for (Field otherField : neightborFields) {
+            // dobrze postawiona flaga
+            if (otherField.hasMineWithFlag()) {
+                continue;
+            }
+
+            if (otherField.hasFlagWithoutMine()) {
+                // zle postawiona flaga
+                otherField.setDetonated(true);
+                otherField.setIcon(GameIcon.FLAG_WRONG.getIcon());
+                // w nastepnej iteracji petla natrafi na mine :D
+                // i jebudu !!
+            } else if (otherField.hasMineWithoutFlag()) {
+                // wdepnelismy na mine :/
+                otherField.setDetonated(true);
+                otherField.setIcon(GameIcon.MINE_DETONATED.getIcon());
+                observer.mineDetonated();
+            } else {
+                otherField.detonate();
+            }
+        }
+    }
+
+    private void leftMouseButtonClick() {
+        if (hasFlag()) {
+            return;
+        }
+
+        if (hasMine()) {
+            setDetonated(true);
+            setIcon(GameIcon.MINE_DETONATED.getIcon());
+            observer.mineDetonated();
+        } else {
+            detonate();
+            observer.fieldDetonated();
+        }
+    }
+
+    private void rightMouseButtonClick() {
+        // ustawienie/sciagniecie flagi z pola minowego
+        // jesli pole zostalo juz zdetonowane
+        if (isDetonated()) {
+            return;
+        }
+
+        if (!hasFlag()) {
+            setHasFlag(true);
+            observer.flagWasSet();
+        } else {
+            setHasFlag(false);
+            observer.flagWasRemoved();
+        }
+    }
+
+    private void middleMouseButtonClick() {
+        if (isDetonated() && getNeightborMinesCount() > 0) {
+
+            // sprawdzamy czy liczba min w sasiedztwie zgadza sie
+            // z liczba postawionych flag
+            if (getNeightborMinesCount() == getNeightborFlagsCount()) {
+                // detonujemy sasiednie pola
+                detonateNeighbours();
+                observer.fieldDetonated();
+            }
+        }
+    }
+
     public boolean hasMineWithFlag() {
         return hasMine() && hasFlag();
     }
@@ -188,5 +291,9 @@ public class Field extends JButton {
 
     public boolean hasMineWithoutFlag() {
         return !hasFlag() && hasMine();
+    }
+
+    public void attachObserver(FieldObserver observer) {
+        this.observer = observer;
     }
 }

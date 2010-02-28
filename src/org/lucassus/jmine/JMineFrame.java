@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.lucassus.jmine.field.GameIcon;
 import org.lucassus.jmine.field.GameType;
-import org.lucassus.jmine.field.MineFieldObserver;
+import org.lucassus.jmine.field.observers.MineFieldObserver;
 
 public class JMineFrame extends javax.swing.JFrame implements MineFieldObserver {
 

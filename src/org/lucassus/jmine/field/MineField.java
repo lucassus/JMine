@@ -1,18 +1,18 @@
 package org.lucassus.jmine.field;
 
+import org.lucassus.jmine.field.observers.MineFieldObserver;
 import java.awt.GridBagConstraints;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.swing.JPanel;
+import org.lucassus.jmine.field.observers.FieldObserver;
 
 /**
  * Klasa reprezentujaca pole minowe
  * @author lucassus
  */
-public class MineField {
+public class MineField implements FieldObserver {
 
     /**
      * Liczba postawionych flag
@@ -98,7 +98,7 @@ public class MineField {
     /**
      * Procedura wywolywana jesli gra zakonczyla sie zwycienstwem
      */
-    private void winGame() {
+    private void gameWin() {
         // oflagujemy pozostawione nieoflagowane miny
         for (Field field : fields) {
             // stawiamy flage
@@ -123,14 +123,6 @@ public class MineField {
         for (int i = 0; i < gameType.getMineFieldHeight(); i++) {
             for (int j = 0; j < gameType.getMineFieldWidth(); j++) {
                 Field field = new Field();
-                field.addMouseListener(new MouseAdapter() {
-
-                    @Override
-                    public void mouseClicked(MouseEvent evt) {
-                        mouseClick(evt);
-                    }
-                });
-
                 fields.add(field);
 
                 GridBagConstraints gridBagConstraints = new GridBagConstraints();
@@ -138,6 +130,7 @@ public class MineField {
                 gridBagConstraints.gridy = j;
 
                 panelMineField.add(field, gridBagConstraints);
+                field.attachObserver(this);
             }
         }
 
@@ -148,106 +141,6 @@ public class MineField {
         }
 
         randomizeMines();
-    }
-
-    private void leftMouseButtonClick(Field field) {
-        if (field.hasFlag()) {
-            return;
-        }
-
-        if (field.hasMine()) {
-            field.setDetonated(true);
-            field.setIcon(GameIcon.MINE_DETONATED.getIcon());
-            gameOver();
-        } else {
-            field.detonate();
-
-            if (allDetonated()) {
-                winGame();
-            }
-        }
-    }
-
-    private void middleMouseButtonClick(Field field) {
-        if (field.isDetonated() && field.getNeightborMinesCount() > 0) {
-
-            // sprawdzamy czy liczba min w sasiedztwie zgadza sie
-            // z liczba postawionych flag
-            if (field.getNeightborMinesCount() == field.getNeightborFlagsCount()) {
-                // detonujemy sasiednie pola
-                detonateNeighbours(field);
-
-                if (allDetonated()) {
-                    winGame();
-                }
-            }
-        }
-    }
-
-    private void rightMouseButtonClick(Field field) {
-        // ustawienie/sciagniecie flagi z pola minowego
-        // jesli pole zostalo juz zdetonowane
-        if (field.isDetonated() || gameType.getNumberOfMines() == flagsCount) {
-            return;
-        }
-
-        if (!field.hasFlag()) {
-            field.setHasFlag(true);
-            flagsCount++;
-        } else {
-            field.setHasFlag(false);
-            flagsCount--;
-        }
-
-        int minesLeft = gameType.getNumberOfMines() - flagsCount;
-        observer.updateMinesLeftCount(minesLeft);
-    }
-
-    /**
-     * Obsluguje klikniecie na mine
-     * @param evt
-     */
-    private void mouseClick(MouseEvent evt) {
-        // pole na ktore kliknieto
-        Field field = (Field) evt.getSource();
-
-        if (evt.getButton() == MouseEvent.BUTTON1) {
-            leftMouseButtonClick(field);
-        } else if (evt.getButton() == MouseEvent.BUTTON3) {
-            rightMouseButtonClick(field);
-        } else if (evt.getButton() == MouseEvent.BUTTON2) {
-            middleMouseButtonClick(field);
-        }
-    }
-
-    /**
-     * Funkcja detonuje sasiednie pola,
-     * funkcja wywolywana jestli uzytwkonik kliknie srodkowym
-     * przyciskiem myszy
-     * @param field pole wokol, ktorego maja zostac wysadzone miny
-     */
-    private void detonateNeighbours(Field field) {
-        for (Field otherField : field.getNeightborFields()) {
-            // dobrze postawiona flaga
-            if (otherField.hasMineWithFlag()) {
-                continue;
-            }
-
-            if (otherField.hasFlagWithoutMine()) {
-                // zle postawiona flaga
-                otherField.setDetonated(true);
-                otherField.setIcon(GameIcon.FLAG_WRONG.getIcon());
-                // w nastepnej iteracji petla natrafi na mine :D
-                // i jebudu !!
-            } else if (otherField.hasMineWithoutFlag()) {
-                // wdepnelismy na mine :/
-                otherField.setDetonated(true);
-                otherField.setIcon(GameIcon.MINE_DETONATED.getIcon());
-                gameOver();
-            } else {
-                otherField.detonate();
-            }
-        }
     }
 
     private List<Field> getNeighbourFieldsFor(Field field) {
@@ -312,5 +205,33 @@ public class MineField {
 
     public void attachMineFieldObserver(MineFieldObserver observer) {
         this.observer = observer;
+    }
+
+    @Override
+    public void mineDetonated() {
+        gameOver();
+    }
+
+    @Override
+    public void fieldDetonated() {
+        if (allDetonated()) {
+            gameWin();
+        }
+    }
+
+    @Override
+    public void flagWasSet() {
+        flagsCount++;
+        observer.updateMinesLeftCount(getMinesLeftCount());
+    }
+
+    @Override
+    public void flagWasRemoved() {
+        flagsCount--;
+        observer.updateMinesLeftCount(getMinesLeftCount());
+    }
+
+    private int getMinesLeftCount() {
+        return gameType.getNumberOfMines() - flagsCount;
     }
 }
