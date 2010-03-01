@@ -208,12 +208,12 @@ public class MineField implements FieldObserver {
     }
 
     @Override
-    public void mineDetonated() {
+    public void mineWasDetonated() {
         gameOver();
     }
 
     @Override
-    public void fieldDetonated() {
+    public void fieldWasDetonated() {
         if (allDetonated()) {
             gameWin();
         }

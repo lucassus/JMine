@@ -2,9 +2,9 @@ package org.lucassus.jmine.field.observers;
 
 public interface FieldObserver {
 
-    public void mineDetonated();
+    public void mineWasDetonated();
 
-    public void fieldDetonated();
+    public void fieldWasDetonated();
 
     public void flagWasSet();
 

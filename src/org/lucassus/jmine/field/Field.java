@@ -230,7 +230,7 @@ public class Field extends JButton {
                 // wdepnelismy na mine :/
                 otherField.setDetonated(true);
                 otherField.setIcon(GameIcon.MINE_DETONATED.getIcon());
-                observer.mineDetonated();
+                observer.mineWasDetonated();
             } else {
                 otherField.detonate();
             }
@@ -245,10 +245,10 @@ public class Field extends JButton {
         if (hasMine()) {
             setDetonated(true);
             setIcon(GameIcon.MINE_DETONATED.getIcon());
-            observer.mineDetonated();
+            observer.mineWasDetonated();
         } else {
             detonate();
-            observer.fieldDetonated();
+            observer.fieldWasDetonated();
         }
     }
 
@@ -276,7 +276,7 @@ public class Field extends JButton {
             if (getNeightborMinesCount() == getNeightborFlagsCount()) {
                 // detonujemy sasiednie pola
                 detonateNeighbours();
-                observer.fieldDetonated();
+                observer.fieldWasDetonated();
             }
         }
     }
@@ -290,7 +290,7 @@ public class Field extends JButton {
     }
 
     public boolean hasMineWithoutFlag() {
-        return !hasFlag() && hasMine();
+        return hasMine() && !hasFlag();
     }
 
     public void attachObserver(FieldObserver observer) {
