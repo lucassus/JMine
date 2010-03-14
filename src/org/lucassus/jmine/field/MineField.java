@@ -1,10 +1,8 @@
 package org.lucassus.jmine.field;
 
-import java.awt.GridBagConstraints;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.swing.JPanel;
 import org.lucassus.jmine.field.observers.FieldObserver;
 import org.lucassus.jmine.field.observers.MineFieldObserver;
 
@@ -115,26 +113,19 @@ public class MineField implements FieldObserver {
      * Tworzy pole minowe
      * @param panelMineField
      */
-    public void initializeMineField(JPanel panelMineField) {
+    public void initializeMineField() {
         flagsCount = 0;
-        panelMineField.removeAll();
 
         // tworzymy przeciski reprezentujace komorki pola
         fields = new ArrayList<Field>(gameType.getFieldsCount());
         for (int i = 0; i < gameType.getMineFieldHeight(); i++) {
             for (int j = 0; j < gameType.getMineFieldWidth(); j++) {
                 Coordinate coordinate = new Coordinate(j, i);
-                
+
                 Field field = new Field();
                 field.setCoordinate(coordinate);
                 field.attachObserver(this);
                 fields.add(field);
-
-                GridBagConstraints gridBagConstraints = new GridBagConstraints();
-                gridBagConstraints.gridx = coordinate.getX();
-                gridBagConstraints.gridy = coordinate.getY();
-
-                panelMineField.add(field, gridBagConstraints);
             }
         }
 
@@ -145,6 +136,10 @@ public class MineField implements FieldObserver {
         }
 
         randomizeMines();
+    }
+
+    public Iterable<Field> getFields() {
+        return fields;
     }
 
     private List<Field> getNeighbourFieldsFor(Field field) {

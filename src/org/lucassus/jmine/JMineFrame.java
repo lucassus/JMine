@@ -1,5 +1,6 @@
 package org.lucassus.jmine;
 
+import java.awt.GridBagConstraints;
 import org.lucassus.jmine.dialogs.JDialogAbout;
 import org.lucassus.jmine.dialogs.JDialogPreferences;
 import org.lucassus.jmine.field.MineField;
@@ -8,6 +9,7 @@ import java.util.ResourceBundle;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import org.lucassus.jmine.field.Field;
 import org.lucassus.jmine.field.GameIcon;
 import org.lucassus.jmine.field.GameType;
 import org.lucassus.jmine.field.observers.MineFieldObserver;
@@ -32,8 +34,18 @@ public class JMineFrame extends javax.swing.JFrame implements MineFieldObserver 
     }
 
     private void newGame() {
-        mineField.initializeMineField(getMineFieldPanel());
-        String numberOfNimes = Integer.toString(mineField.getGameType().getNumberOfMines()).toString();
+        mineField.initializeMineField();
+
+        panelMineField.removeAll();
+        for (Field field : mineField.getFields()) {
+          GridBagConstraints gridBagConstraints = new GridBagConstraints();
+          gridBagConstraints.gridx = field.getCoordinate().getX();
+          gridBagConstraints.gridy = field.getCoordinate().getY();
+
+          panelMineField.add(field, gridBagConstraints);
+        }
+
+        String numberOfNimes = Integer.toString(mineField.getGameType().getNumberOfMines());
         textFieldMinesLeftCount.setText(numberOfNimes);
         buttonNewGame.setIcon(GameIcon.FACE.getIcon());
         this.pack();
