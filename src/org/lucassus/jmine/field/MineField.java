@@ -1,12 +1,12 @@
 package org.lucassus.jmine.field;
 
-import org.lucassus.jmine.field.observers.MineFieldObserver;
 import java.awt.GridBagConstraints;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.swing.JPanel;
 import org.lucassus.jmine.field.observers.FieldObserver;
+import org.lucassus.jmine.field.observers.MineFieldObserver;
 
 /**
  * Klasa reprezentujaca pole minowe
@@ -72,6 +72,7 @@ public class MineField implements FieldObserver {
 
             if (field.hasMine()) {
                 field.setForeground(new java.awt.Color(255, 0, 0));
+
                 if (field.hasFlag()) {
                     field.setIcon(GameIcon.FLAG.getIcon());
                 } else {
@@ -122,15 +123,18 @@ public class MineField implements FieldObserver {
         fields = new ArrayList<Field>(gameType.getFieldsCount());
         for (int i = 0; i < gameType.getMineFieldHeight(); i++) {
             for (int j = 0; j < gameType.getMineFieldWidth(); j++) {
+                Coordinate coordinate = new Coordinate(j, i);
+                
                 Field field = new Field();
+                field.setCoordinate(coordinate);
+                field.attachObserver(this);
                 fields.add(field);
 
                 GridBagConstraints gridBagConstraints = new GridBagConstraints();
-                gridBagConstraints.gridx = i;
-                gridBagConstraints.gridy = j;
+                gridBagConstraints.gridx = coordinate.getX();
+                gridBagConstraints.gridy = coordinate.getY();
 
                 panelMineField.add(field, gridBagConstraints);
-                field.attachObserver(this);
             }
         }
 
@@ -146,9 +150,8 @@ public class MineField implements FieldObserver {
     private List<Field> getNeighbourFieldsFor(Field field) {
         List<Field> neighbours = new ArrayList<Field>();
 
-        int position = fields.indexOf(field);
-        int x = position % gameType.getMineFieldWidth();
-        int y = position / gameType.getMineFieldHeight();
+        int x = field.getCoordinate().getX();
+        int y = field.getCoordinate().getY();
 
         for (int i = -1; i < 2; i++) {
             for (int j = -1; j < 2; j++) {
@@ -156,7 +159,9 @@ public class MineField implements FieldObserver {
                     continue;
                 }
 
-                if ((x + i >= 0) && (y + j >= 0) && (x + i < gameType.getMineFieldWidth()) && (y + j < gameType.getMineFieldHeight())) {
+                if ((x + i >= 0) && (y + j >= 0)
+                        && (x + i < gameType.getMineFieldWidth())
+                        && (y + j < gameType.getMineFieldHeight())) {
                     int pos = (y + j) * gameType.getMineFieldHeight() + (x + i);
                     Field otherField = fields.get(pos);
                     neighbours.add(otherField);

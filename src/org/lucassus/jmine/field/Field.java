@@ -36,6 +36,8 @@ public class Field extends JButton {
     private List<Field> neightborFields;
     private FieldObserver observer;
 
+    private Coordinate coordinate;
+
     /** Creates a new instance of Mine */
     public Field() {
         super();
@@ -296,4 +298,12 @@ public class Field extends JButton {
     public void attachObserver(FieldObserver observer) {
         this.observer = observer;
     }
+
+  public void setCoordinate(Coordinate coordinate) {
+    this.coordinate = coordinate;
+  }
+
+  public Coordinate getCoordinate() {
+    return coordinate;
+  }
 }
