@@ -2,16 +2,13 @@ package org.lucassus.jmine.field;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 import javax.swing.JButton;
 import org.lucassus.jmine.field.observers.FieldObserver;
 
-/**
- * Pojedyncza komorka pola minowego
- * @author lucassus
- */
 public class Field extends JButton {
 
     /**
@@ -50,7 +47,7 @@ public class Field extends JButton {
         });
 
         setText(null);
-        setMargin(new java.awt.Insets(0, 0, 0, 0));
+        setMargin(new Insets(0, 0, 0, 0));
         setPreferredSize(new Dimension(mineSize, mineSize));
 
         isDetonated = false;

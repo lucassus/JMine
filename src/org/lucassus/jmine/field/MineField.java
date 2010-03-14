@@ -6,10 +6,6 @@ import java.util.List;
 import org.lucassus.jmine.field.observers.FieldObserver;
 import org.lucassus.jmine.field.observers.MineFieldObserver;
 
-/**
- * Klasa reprezentujaca pole minowe
- * @author lucassus
- */
 public class MineField implements FieldObserver {
 
     /**
