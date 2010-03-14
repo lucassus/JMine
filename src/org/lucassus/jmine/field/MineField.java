@@ -69,7 +69,7 @@ public class MineField implements FieldObserver {
             }
 
             if (field.hasMine()) {
-                field.setForeground(new java.awt.Color(255, 0, 0));
+                field.setRedForeground();
 
                 if (field.hasFlag()) {
                     field.setIcon(GameIcon.FLAG.getIcon());

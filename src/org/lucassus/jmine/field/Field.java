@@ -35,7 +35,6 @@ public class Field extends JButton {
      */
     private List<Field> neightborFields;
     private FieldObserver observer;
-
     private Coordinate coordinate;
 
     /** Creates a new instance of Mine */
@@ -167,22 +166,22 @@ public class Field extends JButton {
         }
 
         setDetonated(true);
+        
         int minesCount = getNeightborMinesCount();
         if (minesCount > 0) {
             // w poblizu znajduja sie miny
-            setBackground(new java.awt.Color(238, 238, 238));
+            Color gray = new Color(238, 238, 238);
+            setBackground(gray);
 
-            Color color = new Color(0, 0, 0);
             // okreslenie koloru cyfry
             if (minesCount == 1) {
-                color = new Color(0, 0, 255);
+                setBlueForeground();
             } else if (minesCount == 2) {
-                color = new Color(0, 128, 0);
+                setGreenForeground();
             } else if (minesCount >= 3) {
-                color = new Color(255, 0, 0);
+                setRedForeground();
             }
 
-            setForeground(color);
             setText(Integer.toString(minesCount));
         } else {
             // brak min w poblizu
@@ -299,11 +298,23 @@ public class Field extends JButton {
         this.observer = observer;
     }
 
-  public void setCoordinate(Coordinate coordinate) {
-    this.coordinate = coordinate;
-  }
+    public void setCoordinate(Coordinate coordinate) {
+        this.coordinate = coordinate;
+    }
 
-  public Coordinate getCoordinate() {
-    return coordinate;
-  }
+    public Coordinate getCoordinate() {
+        return coordinate;
+    }
+
+    public void setRedForeground() {
+        setForeground(new Color(255, 0, 0));
+    }
+
+    private void setBlueForeground() {
+        setForeground(new Color(0, 0, 255));
+    }
+
+    private void setGreenForeground() {
+        setForeground(new Color(0, 128, 0));
+    }
 }
