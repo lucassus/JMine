@@ -3,13 +3,13 @@ package org.lucassus.jmine.field;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Insets;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.List;
 import javax.swing.JButton;
 import org.lucassus.jmine.field.observers.FieldObserver;
 
-public class Field extends JButton {
+public class Field extends JButton implements MouseListener {
 
     /**
      * Rozmiar przycisku z mina (w pikselach)
@@ -37,18 +37,10 @@ public class Field extends JButton {
     /** Creates a new instance of Mine */
     public Field() {
         super();
-
-        addMouseListener(new MouseAdapter() {
-
-            @Override
-            public void mouseClicked(MouseEvent evt) {
-                mouseClick(evt);
-            }
-        });
-
         setText(null);
         setMargin(new Insets(0, 0, 0, 0));
         setPreferredSize(new Dimension(mineSize, mineSize));
+        addMouseListener(this);
 
         isDetonated = false;
         hasFlag = false;
@@ -169,31 +161,24 @@ public class Field extends JButton {
             // w poblizu znajduja sie miny
             Color gray = new Color(238, 238, 238);
             setBackground(gray);
-            
+
             // okreslenie koloru cyfry
             setForeground(Color.blue.darker());
             if (minesCount == 1) {
                 setForeground(Color.blue);
-            }
-            else if (minesCount == 2) {
+            } else if (minesCount == 2) {
                 setForeground(Color.green.darker());
-            }
-            else if (minesCount == 3) {
+            } else if (minesCount == 3) {
                 setForeground(Color.red.darker());
-            }
-            else if (minesCount == 4) {
+            } else if (minesCount == 4) {
                 setForeground(Color.blue.darker());
-            }
-            else if (minesCount == 5) {
+            } else if (minesCount == 5) {
                 setForeground(Color.orange.darker());
-            }
-            else if (minesCount == 6) {
+            } else if (minesCount == 6) {
                 setForeground(Color.green.darker().darker());
-            }
-            else if (minesCount == 7) {
+            } else if (minesCount == 7) {
                 setForeground(Color.red.darker().darker());
-            }
-            else if (minesCount == 8) {
+            } else if (minesCount == 8) {
                 setForeground(Color.cyan.darker());
             }
 
@@ -206,20 +191,6 @@ public class Field extends JButton {
             for (Field otherField : getNeightborFields()) {
                 otherField.detonate();
             }
-        }
-    }
-
-    /**
-     * Obsluguje klikniecie na mine
-     * @param evt
-     */
-    private void mouseClick(MouseEvent evt) {
-        if (evt.getButton() == MouseEvent.BUTTON1) {
-            leftMouseButtonClick();
-        } else if (evt.getButton() == MouseEvent.BUTTON3) {
-            rightMouseButtonClick();
-        } else if (evt.getButton() == MouseEvent.BUTTON2) {
-            middleMouseButtonClick();
         }
     }
 
@@ -319,5 +290,32 @@ public class Field extends JButton {
 
     public Coordinate getCoordinate() {
         return coordinate;
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if (e.getButton() == MouseEvent.BUTTON1) {
+            leftMouseButtonClick();
+        } else if (e.getButton() == MouseEvent.BUTTON3) {
+            rightMouseButtonClick();
+        } else if (e.getButton() == MouseEvent.BUTTON2) {
+            middleMouseButtonClick();
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
     }
 }
