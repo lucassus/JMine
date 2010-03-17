@@ -163,20 +163,38 @@ public class Field extends JButton {
         }
 
         setDetonated(true);
-        
+
         int minesCount = getNeightborMinesCount();
         if (minesCount > 0) {
             // w poblizu znajduja sie miny
             Color gray = new Color(238, 238, 238);
             setBackground(gray);
-
+            
             // okreslenie koloru cyfry
+            setForeground(Color.blue.darker());
             if (minesCount == 1) {
-                setBlueForeground();
-            } else if (minesCount == 2) {
-                setGreenForeground();
-            } else if (minesCount >= 3) {
-                setRedForeground();
+                setForeground(Color.blue);
+            }
+            else if (minesCount == 2) {
+                setForeground(Color.green.darker());
+            }
+            else if (minesCount == 3) {
+                setForeground(Color.red.darker());
+            }
+            else if (minesCount == 4) {
+                setForeground(Color.blue.darker());
+            }
+            else if (minesCount == 5) {
+                setForeground(Color.orange.darker());
+            }
+            else if (minesCount == 6) {
+                setForeground(Color.green.darker().darker());
+            }
+            else if (minesCount == 7) {
+                setForeground(Color.red.darker().darker());
+            }
+            else if (minesCount == 8) {
+                setForeground(Color.cyan.darker());
             }
 
             setText(Integer.toString(minesCount));
@@ -301,17 +319,5 @@ public class Field extends JButton {
 
     public Coordinate getCoordinate() {
         return coordinate;
-    }
-
-    public void setRedForeground() {
-        setForeground(new Color(255, 0, 0));
-    }
-
-    private void setBlueForeground() {
-        setForeground(new Color(0, 0, 255));
-    }
-
-    private void setGreenForeground() {
-        setForeground(new Color(0, 128, 0));
     }
 }

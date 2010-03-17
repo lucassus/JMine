@@ -1,5 +1,6 @@
 package org.lucassus.jmine.field;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,6 +16,7 @@ public class MineField implements FieldObserver {
     /**
      * Rodzaj gry
      */
+    // TODO remove this relation
     private GameType gameType;
     /**
      * Tablica przechowujaca komorki pola minowego
@@ -65,7 +67,7 @@ public class MineField implements FieldObserver {
             }
 
             if (field.hasMine()) {
-                field.setRedForeground();
+                field.setForeground(Color.red);
 
                 if (field.hasFlag()) {
                     field.setIcon(GameIcon.FLAG.getIcon());
@@ -114,9 +116,9 @@ public class MineField implements FieldObserver {
 
         // tworzymy przeciski reprezentujace komorki pola
         fields = new ArrayList<Field>(gameType.getFieldsCount());
-        for (int i = 0; i < gameType.getMineFieldHeight(); i++) {
-            for (int j = 0; j < gameType.getMineFieldWidth(); j++) {
-                Coordinate coordinate = new Coordinate(j, i);
+        for (int y = 0; y < gameType.getMineFieldHeight(); y++) {
+            for (int x = 0; x < gameType.getMineFieldWidth(); x++) {
+                Coordinate coordinate = new Coordinate(x, y);
 
                 Field field = new Field();
                 field.setCoordinate(coordinate);
@@ -153,14 +155,23 @@ public class MineField implements FieldObserver {
                 if ((x + i >= 0) && (y + j >= 0)
                         && (x + i < gameType.getMineFieldWidth())
                         && (y + j < gameType.getMineFieldHeight())) {
-                    int pos = (y + j) * gameType.getMineFieldHeight() + (x + i);
-                    Field otherField = fields.get(pos);
+                    Field otherField = getFieldByCoordinate(new Coordinate(x + i, y + j));
                     neighbours.add(otherField);
                 }
             }
         }
 
         return neighbours;
+    }
+
+    public Field getFieldByCoordinate(Coordinate coordinate) {
+        int x = coordinate.getX();
+        int y = coordinate.getY();
+
+        int position = y * gameType.getMineFieldHeight() + x;
+        Field field = fields.get(position);
+
+        return field;
     }
 
     /**
