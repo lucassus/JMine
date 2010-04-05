@@ -1,10 +1,25 @@
 package org.lucassus.jmine.enums;
 
+/**
+ * Represents Game type configuration.
+ */
 public enum GameType {
 
+    /**
+     * Configuration for novice player.
+     */
     NOVICE(9, 9, 10),
+    /**
+     * Configuration for intermediate player.
+     */
     INTERMEDIATE(16, 16, 40),
+    /**
+     * Configuration for expert player.
+     */
     EXPERT(30, 16, 99),
+    /**
+     * Custom configuration.
+     */
     USER(9, 9, 10);
     /**
      * Szerokosc pola minowego
@@ -19,6 +34,12 @@ public enum GameType {
      */
     private int numberOfMines;
 
+    /**
+     * The Constructor.
+     * @param mineFieldWidth
+     * @param mineFieldHeight
+     * @param numberOfMines
+     */
     GameType(int mineFieldWidth, int mineFieldHeight, int numberOfMines) {
         this.mineFieldWidth = mineFieldWidth;
         this.mineFieldHeight = mineFieldHeight;
