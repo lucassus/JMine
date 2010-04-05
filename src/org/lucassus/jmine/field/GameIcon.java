@@ -13,11 +13,11 @@ public enum GameIcon {
     FACE_WIN("face_win.gif"),
     FACE_DEAD("face_dead.gif");
 
-    private final String PATH_PREFIX = "/org/lucassus/jmine/resources/";
     private final ImageIcon icon;
+    public static final String PATH_PREFIX = "/org/lucassus/jmine/resources/";
 
-    GameIcon(String iconPath) {
-        URL location = getClass().getResource(PATH_PREFIX + iconPath);
+    GameIcon(String iconFileName) {
+        URL location = getClass().getResource(PATH_PREFIX + iconFileName);
         icon = new ImageIcon(location);
     }
 

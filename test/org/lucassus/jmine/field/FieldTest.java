@@ -1,10 +1,8 @@
 package org.lucassus.jmine.field;
 
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import junit.framework.TestCase;
-import org.lucassus.jmine.field.observers.FieldObserver;
 
 public class FieldTest extends TestCase {
 

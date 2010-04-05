@@ -1,6 +1,6 @@
 package org.lucassus.jmine.field.observers;
 
-public interface MineFieldObserver {
+public interface IMineFieldObserver {
 
     public void updateMinesLeftCount(int minesLeft);
 

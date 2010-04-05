@@ -12,9 +12,9 @@ import javax.swing.JTextField;
 import org.lucassus.jmine.field.Field;
 import org.lucassus.jmine.field.GameIcon;
 import org.lucassus.jmine.field.GameType;
-import org.lucassus.jmine.field.observers.MineFieldObserver;
+import org.lucassus.jmine.field.observers.IMineFieldObserver;
 
-public class JMineFrame extends javax.swing.JFrame implements MineFieldObserver {
+public class JMineFrame extends javax.swing.JFrame implements IMineFieldObserver {
 
     private MineField mineField;
     private Locale currentLocale;

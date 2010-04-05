@@ -4,15 +4,16 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.lucassus.jmine.field.observers.FieldObserver;
-import org.lucassus.jmine.field.observers.MineFieldObserver;
+import org.lucassus.jmine.field.observers.IFieldObserver;
+import org.lucassus.jmine.field.observers.IMineFieldObserver;
 
-public class MineField implements FieldObserver {
+public class MineField implements IFieldObserver {
 
     /**
      * Liczba postawionych flag
      */
     private int flagsCount;
+
     /**
      * Rodzaj gry
      */
@@ -22,7 +23,7 @@ public class MineField implements FieldObserver {
      * Tablica przechowujaca komorki pola minowego
      */
     private List<Field> fields;
-    private MineFieldObserver observer;
+    private IMineFieldObserver observer;
 
     /**
      * Creates a new instance of MineField
@@ -87,7 +88,7 @@ public class MineField implements FieldObserver {
      * Sprawdza czy odkryto wszystkie niezaminowane pola
      * @return
      */
-    private boolean allDetonated() {
+    public boolean allDetonated() {
         int detonatedFieldsCount = getDetonatedFieldsCount();
         return detonatedFieldsCount == (gameType.getFieldsCount() - gameType.getNumberOfMines());
     }
@@ -137,7 +138,7 @@ public class MineField implements FieldObserver {
         randomizeMines();
     }
 
-    public Iterable<Field> getFields() {
+    public List<Field> getFields() {
         return fields;
     }
 
@@ -211,7 +212,7 @@ public class MineField implements FieldObserver {
         field.detonate();
     }
 
-    public void attachMineFieldObserver(MineFieldObserver observer) {
+    public void attachMineFieldObserver(IMineFieldObserver observer) {
         this.observer = observer;
     }
 
@@ -241,5 +242,9 @@ public class MineField implements FieldObserver {
 
     private int getMinesLeftCount() {
         return gameType.getNumberOfMines() - flagsCount;
+    }
+
+    public int getFlagsCount() {
+        return flagsCount;
     }
 }

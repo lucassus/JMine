@@ -1,6 +1,6 @@
 package org.lucassus.jmine.field.observers;
 
-public interface FieldObserver {
+public interface IFieldObserver {
 
     public void mineWasDetonated();
 

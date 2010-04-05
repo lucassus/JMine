@@ -8,7 +8,7 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
-import org.lucassus.jmine.field.observers.FieldObserver;
+import org.lucassus.jmine.field.observers.IFieldObserver;
 
 public class Field extends JButton implements MouseListener {
 
@@ -32,7 +32,7 @@ public class Field extends JButton implements MouseListener {
      * Sąsiednie miny
      */
     private List<Field> neighborFields;
-    private FieldObserver observer;
+    private IFieldObserver observer;
     private Coordinate coordinate;
 
     /** Creates a new instance of Mine */
@@ -285,7 +285,7 @@ public class Field extends JButton implements MouseListener {
         return hasMine() && !hasFlag();
     }
 
-    public void attachObserver(FieldObserver observer) {
+    public void attachObserver(IFieldObserver observer) {
         this.observer = observer;
     }
 
