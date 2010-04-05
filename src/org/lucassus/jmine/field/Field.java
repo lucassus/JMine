@@ -10,7 +10,7 @@ import java.util.List;
 import javax.swing.JButton;
 import org.lucassus.jmine.field.observers.IFieldObserver;
 
-public class Field extends JButton implements MouseListener {
+public class Field extends JButton {
 
     /**
      * Rozmiar przycisku z mina (w pikselach)
@@ -41,7 +41,7 @@ public class Field extends JButton implements MouseListener {
         setText(null);
         setMargin(new Insets(0, 0, 0, 0));
         setPreferredSize(new Dimension(mineSize, mineSize));
-        addMouseListener(this);
+        addMouseListener(new FieldMouseListener(this));
 
         neighborFields = new ArrayList<Field>();
         isDetonated = false;
@@ -205,7 +205,7 @@ public class Field extends JButton implements MouseListener {
      * przyciskiem myszy
      * @param field pole wokol, ktorego maja zostac wysadzone miny
      */
-    private void detonateNeighbourFields() {
+    public void detonateNeighbourFields() {
         for (Field neighborField : neighborFields) {
             // dobrze postawiona flaga
             if (neighborField.hasMineWithFlag()) {
@@ -225,50 +225,6 @@ public class Field extends JButton implements MouseListener {
                 observer.mineWasDetonated();
             } else {
                 neighborField.detonate();
-            }
-        }
-    }
-
-    private void leftMouseButtonClick() {
-        if (hasFlag()) {
-            return;
-        }
-
-        if (hasMine()) {
-            setDetonated(true);
-            setIcon(GameIcon.MINE_DETONATED.getIcon());
-            observer.mineWasDetonated();
-        } else {
-            detonate();
-            observer.fieldWasDetonated();
-        }
-    }
-
-    private void rightMouseButtonClick() {
-        // ustawienie/sciagniecie flagi z pola minowego
-        // jesli pole zostalo juz zdetonowane
-        if (isDetonated()) {
-            return;
-        }
-
-        if (!hasFlag()) {
-            setHasFlag(true);
-            observer.flagWasSet();
-        } else {
-            setHasFlag(false);
-            observer.flagWasRemoved();
-        }
-    }
-
-    private void middleMouseButtonClick() {
-        if (isDetonated() && getNeighborMinesCount() > 0) {
-
-            // sprawdzamy czy liczba min w sasiedztwie zgadza sie
-            // z liczba postawionych flag
-            if (getNeighborMinesCount() == getNeighborFlagsCount()) {
-                // detonujemy sasiednie pola
-                detonateNeighbourFields();
-                observer.fieldWasDetonated();
             }
         }
     }
@@ -297,30 +253,7 @@ public class Field extends JButton implements MouseListener {
         return coordinate;
     }
 
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON1) {
-            leftMouseButtonClick();
-        } else if (e.getButton() == MouseEvent.BUTTON3) {
-            rightMouseButtonClick();
-        } else if (e.getButton() == MouseEvent.BUTTON2) {
-            middleMouseButtonClick();
-        }
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
+    public IFieldObserver getObserver() {
+        return observer;
     }
 }
