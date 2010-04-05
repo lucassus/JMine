@@ -23,7 +23,7 @@ public class JMineFrame extends javax.swing.JFrame implements IMineFieldObserver
     /** Creates new form JMineFrame */
     public JMineFrame() {
         currentLocale = new Locale("en", "GB");
-        messages = ResourceBundle.getBundle("org/lucassus/jmine/resources/languages", currentLocale);
+        messages = ResourceBundle.getBundle("resources/i18n/languages", currentLocale);
         initComponents();
 
         mineField = new MineField();
@@ -130,7 +130,7 @@ public class JMineFrame extends javax.swing.JFrame implements IMineFieldObserver
 
         jPanelTop.setLayout(new java.awt.GridBagLayout());
 
-        buttonNewGame.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/lucassus/jmine/resources/face.gif"))); // NOI18N
+        buttonNewGame.setIcon(GameIcon.FACE.getIcon());
         buttonNewGame.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         buttonNewGame.setPreferredSize(new java.awt.Dimension(28, 28));
         buttonNewGame.addMouseListener(new java.awt.event.MouseAdapter() {

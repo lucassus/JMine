@@ -14,7 +14,7 @@ public enum GameIcon {
     FACE_DEAD("face_dead.gif");
 
     private final ImageIcon icon;
-    public static final String PATH_PREFIX = "/org/lucassus/jmine/resources/";
+    public static final String PATH_PREFIX = "/resources/";
 
     GameIcon(String iconFileName) {
         URL location = getClass().getResource(PATH_PREFIX + iconFileName);
