@@ -1,11 +1,10 @@
 package org.lucassus.jmine.field;
 
+import org.lucassus.jmine.field.listeners.FieldMouseListener;
 import org.lucassus.jmine.enums.GameIcon;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Insets;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;

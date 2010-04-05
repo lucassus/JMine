@@ -8,7 +8,7 @@ package org.lucassus.jmine.dialogs;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.lucassus.jmine.JMineFrame;
-import org.lucassus.jmine.field.GameTypeException;
+import org.lucassus.jmine.enums.GameTypeException;
 import org.lucassus.jmine.field.MineField;
 import java.awt.Rectangle;
 import javax.swing.JSlider;
