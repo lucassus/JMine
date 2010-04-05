@@ -129,8 +129,9 @@ public class MineField implements FieldObserver {
 
         // set neighbour fields for each field
         for (Field field : fields) {
-            List<Field> neighbourFields = getNeighbourFieldsFor(field);
-            field.setNeightborFields(neighbourFields);
+            for (Field neighbourField : getNeighbourFieldsFor(field)) {
+                field.addNeighborField(neighbourField);
+            }
         }
 
         randomizeMines();

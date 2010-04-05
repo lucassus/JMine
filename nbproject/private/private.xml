@@ -3,7 +3,17 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1">
         <file>
             <url>src/org/lucassus/jmine/field/Field.java</url>
-            <line>142</line>
+            <line>132</line>
         </file>
     </editor-bookmarks>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/1">
+        <file>file:/home/lucassus/Projects/JMine/src/org/lucassus/jmine/field/Field.java</file>
+        <file>file:/home/lucassus/Projects/JMine/src/org/lucassus/jmine/field/MineField.java</file>
+        <file>file:/home/lucassus/Projects/JMine/src/org/lucassus/jmine/JMine.java</file>
+        <file>file:/home/lucassus/Projects/JMine/src/org/lucassus/jmine/field/GameType.java</file>
+        <file>file:/home/lucassus/Projects/JMine/test/org/lucassus/jmine/field/FieldTest.java</file>
+        <file>file:/home/lucassus/Projects/JMine/test/org/lucassus/jmine/field/MineFieldTest.java</file>
+        <file>file:/home/lucassus/Projects/JMine/test/org/lucassus/jmine/field/GameTypeTest.java</file>
+        <file>file:/home/lucassus/Projects/JMine/test/org/lucassus/jmine/field/GameIconTest.java</file>
+    </open-files>
 </project-private>

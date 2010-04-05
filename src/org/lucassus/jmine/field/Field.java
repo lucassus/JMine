@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
 import org.lucassus.jmine.field.observers.FieldObserver;
@@ -30,7 +31,7 @@ public class Field extends JButton implements MouseListener {
     /**
      * Sąsiednie miny
      */
-    private List<Field> neightborFields;
+    private List<Field> neighborFields;
     private FieldObserver observer;
     private Coordinate coordinate;
 
@@ -42,6 +43,7 @@ public class Field extends JButton implements MouseListener {
         setPreferredSize(new Dimension(mineSize, mineSize));
         addMouseListener(this);
 
+        neighborFields = new ArrayList<Field>();
         isDetonated = false;
         hasFlag = false;
     }
@@ -50,10 +52,10 @@ public class Field extends JButton implements MouseListener {
      * Zwraca liczbe min znajdujacych sie w sasiedztwie pola
      * @return liczba min znajdujacych sie w sasiedztwie
      */
-    public int getNeightborMinesCount() {
+    public int getNeighborMinesCount() {
         int count = 0;
-        for (Field field : neightborFields) {
-            if (field.hasMine) {
+        for (Field field : neighborFields) {
+            if (field.hasMine()) {
                 count++;
             }
         }
@@ -61,9 +63,9 @@ public class Field extends JButton implements MouseListener {
         return count;
     }
 
-    public int getNeightborFlagsCount() {
+    public int getNeighborFlagsCount() {
         int count = 0;
-        for (Field field : neightborFields) {
+        for (Field field : neighborFields) {
             if (field.hasFlag()) {
                 count++;
             }
@@ -131,17 +133,18 @@ public class Field extends JButton implements MouseListener {
     }
 
     /**
-     * @return the neightborMines
+     * @return the neighborMines
      */
-    public List<Field> getNeightborFields() {
-        return neightborFields;
+    public List<Field> getNeighborFields() {
+        return neighborFields;
     }
 
-    /**
-     * @param neightborFields the neightborMines to set
-     */
-    public void setNeightborFields(List<Field> neightborFields) {
-        this.neightborFields = neightborFields;
+    public boolean addNeighborField(Field neighbourField) {
+        return neighborFields.add(neighbourField);
+    }
+
+    public void setNeighborFields(List<Field> neighborFields) {
+        this.neighborFields = neighborFields;
     }
 
     /**
@@ -156,42 +159,44 @@ public class Field extends JButton implements MouseListener {
 
         setDetonated(true);
 
-        int minesCount = getNeightborMinesCount();
-        if (minesCount > 0) {
-            // w poblizu znajduja sie miny
-            Color gray = new Color(238, 238, 238);
-            setBackground(gray);
-
-            // okreslenie koloru cyfry
-            setForeground(Color.blue.darker());
-            if (minesCount == 1) {
-                setForeground(Color.blue);
-            } else if (minesCount == 2) {
-                setForeground(Color.green.darker());
-            } else if (minesCount == 3) {
-                setForeground(Color.red.darker());
-            } else if (minesCount == 4) {
-                setForeground(Color.blue.darker());
-            } else if (minesCount == 5) {
-                setForeground(Color.orange.darker());
-            } else if (minesCount == 6) {
-                setForeground(Color.green.darker().darker());
-            } else if (minesCount == 7) {
-                setForeground(Color.red.darker().darker());
-            } else if (minesCount == 8) {
-                setForeground(Color.cyan.darker());
-            }
-
-            setText(Integer.toString(minesCount));
+        if (getNeighborMinesCount() > 0) {
+            showNeighbourMinesCount();
         } else {
-            // brak min w poblizu
             setEnabled(false);
 
             // detonujemy sasiednie pola
-            for (Field otherField : getNeightborFields()) {
+            for (Field otherField : getNeighborFields()) {
                 otherField.detonate();
             }
         }
+    }
+
+    private void showNeighbourMinesCount() {
+        Color gray = new Color(238, 238, 238);
+        setBackground(gray);
+
+        // okreslenie koloru cyfry
+        int minesCount = getNeighborMinesCount();
+        setForeground(Color.blue.darker());
+        if (minesCount == 1) {
+            setForeground(Color.blue);
+        } else if (minesCount == 2) {
+            setForeground(Color.green.darker());
+        } else if (minesCount == 3) {
+            setForeground(Color.red.darker());
+        } else if (minesCount == 4) {
+            setForeground(Color.blue.darker());
+        } else if (minesCount == 5) {
+            setForeground(Color.orange.darker());
+        } else if (minesCount == 6) {
+            setForeground(Color.green.darker().darker());
+        } else if (minesCount == 7) {
+            setForeground(Color.red.darker().darker());
+        } else if (minesCount == 8) {
+            setForeground(Color.cyan.darker());
+        }
+        
+        setText(Integer.toString(minesCount));
     }
 
     /**
@@ -200,26 +205,26 @@ public class Field extends JButton implements MouseListener {
      * przyciskiem myszy
      * @param field pole wokol, ktorego maja zostac wysadzone miny
      */
-    private void detonateNeighbours() {
-        for (Field otherField : neightborFields) {
+    private void detonateNeighbourFields() {
+        for (Field neighborField : neighborFields) {
             // dobrze postawiona flaga
-            if (otherField.hasMineWithFlag()) {
+            if (neighborField.hasMineWithFlag()) {
                 continue;
             }
 
-            if (otherField.hasFlagWithoutMine()) {
+            if (neighborField.hasFlagWithoutMine()) {
                 // zle postawiona flaga
-                otherField.setDetonated(true);
-                otherField.setIcon(GameIcon.FLAG_WRONG.getIcon());
+                neighborField.setDetonated(true);
+                neighborField.setIcon(GameIcon.FLAG_WRONG.getIcon());
                 // w nastepnej iteracji petla natrafi na mine :D
                 // i jebudu !!
-            } else if (otherField.hasMineWithoutFlag()) {
+            } else if (neighborField.hasMineWithoutFlag()) {
                 // wdepnelismy na mine :/
-                otherField.setDetonated(true);
-                otherField.setIcon(GameIcon.MINE_DETONATED.getIcon());
+                neighborField.setDetonated(true);
+                neighborField.setIcon(GameIcon.MINE_DETONATED.getIcon());
                 observer.mineWasDetonated();
             } else {
-                otherField.detonate();
+                neighborField.detonate();
             }
         }
     }
@@ -256,13 +261,13 @@ public class Field extends JButton implements MouseListener {
     }
 
     private void middleMouseButtonClick() {
-        if (isDetonated() && getNeightborMinesCount() > 0) {
+        if (isDetonated() && getNeighborMinesCount() > 0) {
 
             // sprawdzamy czy liczba min w sasiedztwie zgadza sie
             // z liczba postawionych flag
-            if (getNeightborMinesCount() == getNeightborFlagsCount()) {
+            if (getNeighborMinesCount() == getNeighborFlagsCount()) {
                 // detonujemy sasiednie pola
-                detonateNeighbours();
+                detonateNeighbourFields();
                 observer.fieldWasDetonated();
             }
         }
