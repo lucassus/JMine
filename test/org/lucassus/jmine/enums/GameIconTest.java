@@ -1,5 +1,6 @@
-package org.lucassus.jmine.field;
+package org.lucassus.jmine.enums;
 
+import org.lucassus.jmine.enums.GameIcon;
 import java.net.URL;
 import javax.swing.ImageIcon;
 import junit.framework.TestCase;

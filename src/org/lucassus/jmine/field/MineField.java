@@ -1,5 +1,7 @@
 package org.lucassus.jmine.field;
 
+import org.lucassus.jmine.enums.GameType;
+import org.lucassus.jmine.enums.GameIcon;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;

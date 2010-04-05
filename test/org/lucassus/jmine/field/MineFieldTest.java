@@ -1,5 +1,6 @@
 package org.lucassus.jmine.field;
 
+import org.lucassus.jmine.enums.GameType;
 import java.util.List;
 import junit.framework.TestCase;
 import org.lucassus.jmine.field.observers.IMineFieldObserver;

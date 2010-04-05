@@ -1,5 +1,6 @@
 package org.lucassus.jmine.field;
 
+import org.lucassus.jmine.enums.GameIcon;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 

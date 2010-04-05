@@ -1,5 +1,6 @@
-package org.lucassus.jmine.field;
+package org.lucassus.jmine.enums;
 
+import org.lucassus.jmine.enums.GameType;
 import junit.framework.TestCase;
 
 public class GameTypeTest extends TestCase {

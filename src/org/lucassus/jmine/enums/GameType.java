@@ -1,4 +1,4 @@
-package org.lucassus.jmine.field;
+package org.lucassus.jmine.enums;
 
 public enum GameType {
 

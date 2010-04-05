@@ -10,8 +10,8 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.lucassus.jmine.field.Field;
-import org.lucassus.jmine.field.GameIcon;
-import org.lucassus.jmine.field.GameType;
+import org.lucassus.jmine.enums.GameIcon;
+import org.lucassus.jmine.enums.GameType;
 import org.lucassus.jmine.field.observers.IMineFieldObserver;
 
 public class JMineFrame extends javax.swing.JFrame implements IMineFieldObserver {

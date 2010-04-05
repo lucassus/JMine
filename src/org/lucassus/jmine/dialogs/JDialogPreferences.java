@@ -15,7 +15,7 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.lucassus.jmine.field.GameType;
+import org.lucassus.jmine.enums.GameType;
 
 /**
  *
