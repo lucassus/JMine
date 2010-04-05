@@ -5,6 +5,7 @@
     <artifactId>JMine</artifactId>
     <packaging>jar</packaging>
     <name>JMine</name>
+    <version>0.9</version>
     <url>http://maven.apache.org</url>
     <build>
         <plugins>
@@ -63,10 +64,10 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <configuration>
-                    <configLocation>config/sun_checks.xml</configLocation>
+                    <configLocation>${basedir}/src/checkstyle/my_checks.xml</configLocation>
+                    <consoleOutput>true</consoleOutput>
                 </configuration>
             </plugin>
         </plugins>
     </reporting>
-    <version>0.9</version>
 </project>
