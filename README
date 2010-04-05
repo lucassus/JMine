@@ -1,0 +1,2 @@
+mvn install
+java -jar target/JMine-0.9.jar
