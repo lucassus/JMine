@@ -8,7 +8,7 @@ package org.lucassus.jmine.dialogs;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.lucassus.jmine.JMineFrame;
-import org.lucassus.jmine.enums.GameTypeException;
+import org.lucassus.jmine.enums.CannotSetCustomGameException;
 import org.lucassus.jmine.field.MineField;
 import java.awt.Rectangle;
 import javax.swing.JSlider;
@@ -346,7 +346,7 @@ public class JDialogPreferences extends javax.swing.JDialog {
                     GameType.USER.setMineFieldWidth(width);
                     GameType.USER.setMineFieldHeight(height);
                     GameType.USER.setNumberOfMines(mines);
-                } catch (GameTypeException ex) {
+                } catch (CannotSetCustomGameException ex) {
                     Logger.getLogger(JDialogPreferences.class.getName()).log(Level.SEVERE, null, ex);
                 }
 

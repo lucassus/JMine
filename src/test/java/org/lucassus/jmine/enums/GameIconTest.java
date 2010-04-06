@@ -10,7 +10,7 @@ public class GameIconTest extends TestCase {
      * Test of getIcon method, of class GameIcon.
      */
     public void testGetIcon() {
-        URL iconLocation = getClass().getResource(GameIcon.PATH_PREFIX + "flag.gif");
+        URL iconLocation = getClass().getResource("/resources/flag.gif");
         ImageIcon expResult = new ImageIcon(iconLocation);
         ImageIcon result = GameIcon.FLAG.getIcon();
 

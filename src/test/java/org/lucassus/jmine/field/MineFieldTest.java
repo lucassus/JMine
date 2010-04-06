@@ -11,7 +11,8 @@ import static org.mockito.Mockito.*;
 public class MineFieldTest extends TestCase {
 
     private MineField instance;
-    @Mock private IMineFieldObserver observerMock;
+    @Mock
+    private IMineFieldObserver observerMock;
 
     @Override
     protected void setUp() throws Exception {
@@ -94,5 +95,4 @@ public class MineFieldTest extends TestCase {
         assertEquals(-1, instance.getFlagsCount());
         verify(observerMock).updateMinesLeftCount(instance.getGameType().getNumberOfMines() + 1);
     }
-
 }
