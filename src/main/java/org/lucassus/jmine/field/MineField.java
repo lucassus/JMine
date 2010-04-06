@@ -1,5 +1,6 @@
 package org.lucassus.jmine.field;
 
+import java.util.Iterator;
 import org.lucassus.jmine.enums.GameType;
 import org.lucassus.jmine.enums.GameIcon;
 import java.awt.Color;
@@ -9,7 +10,7 @@ import java.util.List;
 import org.lucassus.jmine.field.observers.IFieldObserver;
 import org.lucassus.jmine.field.observers.IMineFieldObserver;
 
-public class MineField implements IFieldObserver {
+public class MineField implements IFieldObserver, Iterable<Field> {
 
     /**
      * Liczba postawionych flag
@@ -45,7 +46,11 @@ public class MineField implements IFieldObserver {
 
     private int getDetonatedFieldsCount() {
         int detonatedFieldsCount = 0;
-        for (Field field : fields) {
+
+        Iterator<Field> it = iterator();
+        while (it.hasNext()) {
+            Field field = it.next();
+            
             if (field.isDetonated()) {
                 detonatedFieldsCount++;
             }
@@ -64,7 +69,10 @@ public class MineField implements IFieldObserver {
     }
 
     private void showMines() {
-        for (Field field : fields) {
+        Iterator<Field> it = iterator();
+        while (it.hasNext()) {
+            Field field = it.next();
+            
             if (field.isDetonated()) {
                 continue;
             }
@@ -100,7 +108,10 @@ public class MineField implements IFieldObserver {
      */
     private void gameWin() {
         // oflagujemy pozostawione nieoflagowane miny
-        for (Field field : fields) {
+        Iterator<Field> it = iterator();
+        while (it.hasNext()) {
+            Field field = it.next();
+
             // stawiamy flage
             if (!field.isDetonated() && !field.hasFlag()) {
                 field.setIcon(GameIcon.FLAG.getIcon());
@@ -131,7 +142,10 @@ public class MineField implements IFieldObserver {
         }
 
         // set neighbour fields for each field
-        for (Field field : fields) {
+        Iterator<Field> it = iterator();
+        while(it.hasNext()) {
+            Field field = it.next();
+                    
             for (Field neighbourField : getNeighbourFieldsFor(field)) {
                 field.addNeighborField(neighbourField);
             }
@@ -199,7 +213,9 @@ public class MineField implements IFieldObserver {
      */
     public void hint() {
         List<Field> fieldsLeft = new ArrayList<Field>();
-        for (Field field : fields) {
+        Iterator<Field> it = iterator();
+        while (it.hasNext()) {
+            Field field = iterator().next();
 
             if (field.isDetonated() || field.hasFlag() || field.hasMine()) {
                 continue;
@@ -249,4 +265,10 @@ public class MineField implements IFieldObserver {
     public int getFlagsCount() {
         return flagsCount;
     }
+
+    @Override
+    public Iterator<Field> iterator() {
+        return fields.iterator();
+    }
+
 }
