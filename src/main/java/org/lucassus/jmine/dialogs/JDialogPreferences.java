@@ -42,7 +42,9 @@ public class JDialogPreferences extends javax.swing.JDialog {
             sliderNumberOfMines.setMaximum(maxMines);
         }
     }
+
     private MineField mineField;
+    private GameType gameType;
 
     /**
      * Creates new form JDialogPreferences
@@ -56,19 +58,24 @@ public class JDialogPreferences extends javax.swing.JDialog {
         setLocation(parentBounds.x + 20, parentBounds.y + 20);
 
         mineField = ((JMineFrame) parent).getMineField();
+        gameType = mineField.getGameType();
 
-        initializeSliders(mineField.getGameType());
+        textFieldMineFieldWidth.setText(Integer.toString(gameType.getMineFieldWidth()));
+        textFieldMineFieldHeight.setText(Integer.toString(gameType.getMineFieldHeight()));
+        textFieldNumberOfMines.setText(Integer.toString(gameType.getNumberOfMines()));
+
+        initializeSliders(gameType);
         sliderMineFieldWidth.addChangeListener(new SliderListener(textFieldMineFieldWidth));
         sliderMineFieldHeight.addChangeListener(new SliderListener(textFieldMineFieldHeight));
         sliderNumberOfMines.addChangeListener(new SliderListener(textFieldNumberOfMines));
 
-        if (mineField.getGameType() == GameType.NOVICE) {
+        if (gameType == GameType.NOVICE) {
             radioButtonNoviceGame.setSelected(true);
             disableUserSettings();
-        } else if (mineField.getGameType() == GameType.INTERMEDIATE) {
+        } else if (gameType == GameType.INTERMEDIATE) {
             radioButtonIntermediateGame.setSelected(true);
             disableUserSettings();
-        } else if (mineField.getGameType() == GameType.EXPERT) {
+        } else if (gameType == GameType.EXPERT) {
             radioButtonExpertGame.setSelected(true);
             disableUserSettings();
         } else {

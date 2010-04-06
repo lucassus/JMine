@@ -28,7 +28,7 @@ public class JMineFrame extends javax.swing.JFrame implements IMineFieldObserver
 
         mineField = new MineField();
         mineField.attachMineFieldObserver(this);
-        initCheckBoxes();
+        initGameTypeCheckBoxes();
 
         newGame();
     }
@@ -63,7 +63,7 @@ public class JMineFrame extends javax.swing.JFrame implements IMineFieldObserver
         return buttonNewGame;
     }
 
-    private void initCheckBoxes() {
+    private void initGameTypeCheckBoxes() {
         if (mineField == null) {
             return;
         }
@@ -328,7 +328,7 @@ public class JMineFrame extends javax.swing.JFrame implements IMineFieldObserver
 
 	private void jMenuItemPreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemPreferencesActionPerformed
             new JDialogPreferences(this, true).setVisible(true);
-            initCheckBoxes();
+            initGameTypeCheckBoxes();
             newGame();
 	}//GEN-LAST:event_jMenuItemPreferencesActionPerformed
 
