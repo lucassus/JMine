@@ -25,7 +25,7 @@ public class MineField implements IFieldObserver, Iterable<Field> {
     /**
      * Tablica przechowujaca komorki pola minowego
      */
-    private List<Field> fields;
+    private Field[][] fields;
     private IMineFieldObserver observer;
 
     /**
@@ -60,7 +60,12 @@ public class MineField implements IFieldObserver, Iterable<Field> {
     }
 
     private void randomizeMines() {
-        List<Field> fieldsWithMine = new ArrayList<Field>(fields);
+        List<Field> fieldsWithMine = new ArrayList<Field>(gameType.getNumberOfMines());
+        Iterator<Field> it = iterator();
+        while (it.hasNext()) {
+            fieldsWithMine.add(it.next());
+        }
+
         Collections.shuffle(fieldsWithMine);
         fieldsWithMine = fieldsWithMine.subList(0, gameType.getNumberOfMines());
         for (Field field : fieldsWithMine) {
@@ -129,7 +134,7 @@ public class MineField implements IFieldObserver, Iterable<Field> {
         flagsCount = 0;
 
         // tworzymy przeciski reprezentujace komorki pola
-        fields = new ArrayList<Field>(gameType.getFieldsCount());
+        fields = new Field[gameType.getMineFieldHeight()][gameType.getMineFieldHeight()];
         for (int y = 0; y < gameType.getMineFieldHeight(); y++) {
             for (int x = 0; x < gameType.getMineFieldWidth(); x++) {
                 Coordinate coordinate = new Coordinate(x, y);
@@ -137,7 +142,7 @@ public class MineField implements IFieldObserver, Iterable<Field> {
                 Field field = new Field();
                 field.setCoordinate(coordinate);
                 field.attachObserver(this);
-                fields.add(field);
+                fields[y][x] = field;
             }
         }
 
@@ -154,7 +159,7 @@ public class MineField implements IFieldObserver, Iterable<Field> {
         randomizeMines();
     }
 
-    public List<Field> getFields() {
+    public Field[][] getFields() {
         return fields;
     }
 
@@ -186,10 +191,7 @@ public class MineField implements IFieldObserver, Iterable<Field> {
         int x = coordinate.getX();
         int y = coordinate.getY();
 
-        int position = y * gameType.getMineFieldHeight() + x;
-        Field field = fields.get(position);
-
-        return field;
+        return fields[y][x];
     }
 
     /**
@@ -268,7 +270,7 @@ public class MineField implements IFieldObserver, Iterable<Field> {
 
     @Override
     public Iterator<Field> iterator() {
-        return fields.iterator();
+        return new MineFieldIterator(fields);
     }
 
 }

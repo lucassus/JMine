@@ -1,6 +1,7 @@
 package org.lucassus.jmine;
 
 import java.awt.GridBagConstraints;
+import java.util.Iterator;
 import org.lucassus.jmine.dialogs.JDialogAbout;
 import org.lucassus.jmine.dialogs.JDialogPreferences;
 import org.lucassus.jmine.field.MineField;
@@ -36,8 +37,12 @@ public class JMineFrame extends javax.swing.JFrame implements IMineFieldObserver
     private void newGame() {
         mineField.initializeMineField();
 
+        // add mines to the panel
         panelMineField.removeAll();
-        for (Field field : mineField.getFields()) {
+        Iterator<Field> it = mineField.iterator();
+        while (it.hasNext()) {
+          Field field = it.next();
+          
           GridBagConstraints gridBagConstraints = new GridBagConstraints();
           gridBagConstraints.gridx = field.getCoordinate().getX();
           gridBagConstraints.gridy = field.getCoordinate().getY();
