@@ -25,7 +25,7 @@ public class MineFieldIteratorTest {
     }
 
     /**
-     * Test of next method, of class MineFieldIterator.
+     * Test of hasNext and next method, of class MineFieldIterator.
      */
     @Test
     public void testHasNextAndNext() {
@@ -42,5 +42,6 @@ public class MineFieldIteratorTest {
         assertEquals(field4, instance.next());
 
         assertFalse(instance.hasNext());
+        assertNull(instance.next());
     }
 }

@@ -21,14 +21,18 @@ class MineFieldIterator implements Iterator<Field> {
 
     @Override
     public Field next() {
-        Field field = fields[y][x];
-
-        x = x + 1;
-        if (x >= fields[y].length) {
-            x = 0;
-            y = y + 1;
+        if (y >= fields.length || x >= fields[y].length) {
+            return null;
         }
 
+        // get the next Field
+        Field field = fields[y][x];
+
+        // shift the cursors
+        if (++x >= fields[y].length) {
+            x = 0;
+            y++;
+        }
 
         return field;
     }
