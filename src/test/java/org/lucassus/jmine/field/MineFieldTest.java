@@ -25,23 +25,6 @@ public class MineFieldTest extends TestCase {
     }
 
     /**
-     * Test of getFields method, of class MineField.
-     */
-    public void testGetFields() {
-        List<Field> result = instance.getFields();
-        assertEquals(GameType.NOVICE.getFieldsCount(), result.size());
-    }
-
-    /**
-     * Test of getFieldByCoordinate method, of class MineField.
-     */
-    public void testGetFieldByCoordinate() {
-        Coordinate coordinate = new Coordinate(0, 0);
-        Field result = instance.getFieldByCoordinate(coordinate);
-        assertEquals(instance.getFields().get(0), result);
-    }
-
-    /**
      * Test of getGameType method, of class MineField.
      */
     public void testGetGameType() {
