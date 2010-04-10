@@ -150,7 +150,6 @@ public class Field extends JButton {
      * Rozminowuje komorke pola minowego
      */
     public void detonate() {
-
         // jesli pole zostalo juz zdetonowane
         if (isDetonated()) {
             return;
@@ -243,7 +242,6 @@ public class Field extends JButton {
     public void attachObserver(IFieldObserver observer) {
         this.observer = observer;
     }
-
 
     public IFieldObserver getObserver() {
         return observer;

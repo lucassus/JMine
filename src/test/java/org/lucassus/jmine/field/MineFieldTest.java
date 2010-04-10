@@ -92,6 +92,37 @@ public class MineFieldTest extends TestCase {
     }
 
     public void testGetNeighbourFieldsFor() {
-        List<Field> neighbourFields = instance.getNeighbourFieldsFor(fieldWithMine);
+        List<Field> neighbourFields = null;
+
+        neighbourFields = instance.getNeighbourFieldsFor(fieldWithMine);
+        assertEquals(3, neighbourFields.size());
+        assertTrue(neighbourFields.contains(field2));
+        assertTrue(neighbourFields.contains(field4));
+        assertTrue(neighbourFields.contains(field5));
+
+        neighbourFields = instance.getNeighbourFieldsFor(field4);
+        assertEquals(5, neighbourFields.size());
+        assertTrue(neighbourFields.contains(fieldWithMine));
+        assertTrue(neighbourFields.contains(field2));
+        assertTrue(neighbourFields.contains(field5));
+        assertTrue(neighbourFields.contains(field7));
+        assertTrue(neighbourFields.contains(field8));
+
+        neighbourFields = instance.getNeighbourFieldsFor(field5);
+        assertEquals(8, neighbourFields.size());
+        assertTrue(neighbourFields.contains(fieldWithMine));
+        assertTrue(neighbourFields.contains(field2));
+        assertTrue(neighbourFields.contains(field3));
+        assertTrue(neighbourFields.contains(field4));
+        assertTrue(neighbourFields.contains(field6));
+        assertTrue(neighbourFields.contains(field7));
+        assertTrue(neighbourFields.contains(field8));
+        assertTrue(neighbourFields.contains(field9));
+
+        neighbourFields = instance.getNeighbourFieldsFor(field9);
+        assertEquals(3, neighbourFields.size());
+        assertTrue(neighbourFields.contains(field5));
+        assertTrue(neighbourFields.contains(field6));
+        assertTrue(neighbourFields.contains(field8));
     }
 }
