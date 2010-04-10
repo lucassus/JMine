@@ -1,16 +1,11 @@
-/*
- * JDialogPreferences.java
- *
- * Created on 29 sierpie� 2005, 19:13
- */
 package org.lucassus.jmine.dialogs;
 
+import java.awt.Frame;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.lucassus.jmine.JMineFrame;
 import org.lucassus.jmine.enums.CannotSetCustomGameException;
-import org.lucassus.jmine.field.MineField;
 import java.awt.Rectangle;
+import javax.swing.JDialog;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
@@ -21,7 +16,7 @@ import org.lucassus.jmine.enums.GameType;
  *
  * @author  lucassus
  */
-public class JDialogPreferences extends javax.swing.JDialog {
+public class JDialogPreferences extends JDialog {
 
     private class SliderListener implements ChangeListener {
 
@@ -43,7 +38,6 @@ public class JDialogPreferences extends javax.swing.JDialog {
         }
     }
 
-    private MineField mineField;
     private GameType gameType;
 
     /**
@@ -51,14 +45,12 @@ public class JDialogPreferences extends javax.swing.JDialog {
      * @param parent
      * @param modal
      */
-    public JDialogPreferences(java.awt.Frame parent, boolean modal) {
+    public JDialogPreferences(Frame parent, boolean modal, GameType gameType) {
         super(parent, modal);
+        this.gameType = gameType;
         initComponents();
         Rectangle parentBounds = parent.getBounds();
         setLocation(parentBounds.x + 20, parentBounds.y + 20);
-
-        mineField = ((JMineFrame) parent).getMineField();
-        gameType = mineField.getGameType();
 
         textFieldMineFieldWidth.setText(Integer.toString(gameType.getMineFieldWidth()));
         textFieldMineFieldHeight.setText(Integer.toString(gameType.getMineFieldHeight()));
@@ -107,6 +99,10 @@ public class JDialogPreferences extends javax.swing.JDialog {
         jLabel3.setEnabled(enabled);
     }
 
+    public GameType getGameType() {
+        return gameType;
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -133,8 +129,8 @@ public class JDialogPreferences extends javax.swing.JDialog {
         textFieldMineFieldHeight = new javax.swing.JTextField();
         textFieldNumberOfMines = new javax.swing.JTextField();
         jPanelButtons = new javax.swing.JPanel();
-        jButtonOk = new javax.swing.JButton();
-        jButtonCancel = new javax.swing.JButton();
+        buttonNewGame = new javax.swing.JButton();
+        buttonCancel = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Preferences");
@@ -289,23 +285,23 @@ public class JDialogPreferences extends javax.swing.JDialog {
 
         jPanelButtons.setLayout(new java.awt.GridBagLayout());
 
-        jButtonOk.setText("Ok");
-        jButtonOk.addActionListener(new java.awt.event.ActionListener() {
+        buttonNewGame.setText("New Game");
+        buttonNewGame.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonOkActionPerformed(evt);
+                buttonNewGameActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 2);
-        jPanelButtons.add(jButtonOk, gridBagConstraints);
+        jPanelButtons.add(buttonNewGame, gridBagConstraints);
 
-        jButtonCancel.setText("Cancel");
-        jButtonCancel.addActionListener(new java.awt.event.ActionListener() {
+        buttonCancel.setText("Cancel");
+        buttonCancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonCancelActionPerformed(evt);
+                buttonCancelActionPerformed(evt);
             }
         });
-        jPanelButtons.add(jButtonCancel, new java.awt.GridBagConstraints());
+        jPanelButtons.add(buttonCancel, new java.awt.GridBagConstraints());
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -337,13 +333,13 @@ public class JDialogPreferences extends javax.swing.JDialog {
             disableUserSettings();
 	}//GEN-LAST:event_radioButtonNoviceGameActionPerformed
 
-	private void jButtonOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonOkActionPerformed
+	private void buttonNewGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonNewGameActionPerformed
             if (radioButtonNoviceGame.isSelected()) {
-                mineField.setGameType(GameType.NOVICE);
+                gameType = GameType.NOVICE;
             } else if (radioButtonIntermediateGame.isSelected()) {
-                mineField.setGameType(GameType.INTERMEDIATE);
+                gameType = GameType.INTERMEDIATE;
             } else if (radioButtonExpertGame.isSelected()) {
-                mineField.setGameType(GameType.EXPERT);
+                gameType = GameType.EXPERT;
             } else {
                 int height = sliderMineFieldHeight.getValue();
                 int width = sliderMineFieldWidth.getValue();
@@ -357,21 +353,21 @@ public class JDialogPreferences extends javax.swing.JDialog {
                     Logger.getLogger(JDialogPreferences.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
-                mineField.setGameType(GameType.USER);
+                gameType = GameType.USER;
             }
 
             setVisible(false);
             dispose();
-	}//GEN-LAST:event_jButtonOkActionPerformed
+	}//GEN-LAST:event_buttonNewGameActionPerformed
 
-	private void jButtonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelActionPerformed
+	private void buttonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonCancelActionPerformed
             setVisible(false);
             dispose();
-	}//GEN-LAST:event_jButtonCancelActionPerformed
+	}//GEN-LAST:event_buttonCancelActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton buttonCancel;
     private javax.swing.ButtonGroup buttonGroupGameDifficult;
-    private javax.swing.JButton jButtonCancel;
-    private javax.swing.JButton jButtonOk;
+    private javax.swing.JButton buttonNewGame;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

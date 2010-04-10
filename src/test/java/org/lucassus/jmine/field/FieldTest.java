@@ -79,7 +79,6 @@ public class FieldTest extends TestCase {
         assertTrue(instance.hasFlag());
     }
 
-
     /**
      * Test of getNeighborFields method, of class Field.
      */
@@ -124,16 +123,6 @@ public class FieldTest extends TestCase {
 
         instance.setHasMine(true);
         assertTrue(instance.hasMineWithoutFlag());
-    }
-
-    /**
-     * Test of setCoordinate method, of class Field.
-     */
-    public void testSetCoordinate() {
-        Coordinate coordinate = new Coordinate(1, 1);
-        instance.setCoordinate(coordinate);
-
-        assertEquals(coordinate, instance.getCoordinate());
     }
 
 }

@@ -33,7 +33,6 @@ public class Field extends JButton {
      */
     private List<Field> neighborFields;
     private IFieldObserver observer;
-    private Coordinate coordinate;
 
     /** Creates a new instance of Mine */
     public Field() {
@@ -245,13 +244,6 @@ public class Field extends JButton {
         this.observer = observer;
     }
 
-    public void setCoordinate(Coordinate coordinate) {
-        this.coordinate = coordinate;
-    }
-
-    public Coordinate getCoordinate() {
-        return coordinate;
-    }
 
     public IFieldObserver getObserver() {
         return observer;

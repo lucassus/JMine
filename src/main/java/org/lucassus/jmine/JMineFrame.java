@@ -13,6 +13,7 @@ import javax.swing.JTextField;
 import org.lucassus.jmine.field.Field;
 import org.lucassus.jmine.enums.GameIcon;
 import org.lucassus.jmine.enums.GameType;
+import org.lucassus.jmine.field.Coordinate;
 import org.lucassus.jmine.field.observers.IMineFieldObserver;
 
 public class JMineFrame extends javax.swing.JFrame implements IMineFieldObserver {
@@ -20,22 +21,22 @@ public class JMineFrame extends javax.swing.JFrame implements IMineFieldObserver
     private MineField mineField;
     private Locale currentLocale;
     private ResourceBundle messages;
+    private GameType gameType;
 
     /** Creates new form JMineFrame */
     public JMineFrame() {
+        gameType = GameType.NOVICE;
         currentLocale = new Locale("en", "GB");
         messages = ResourceBundle.getBundle("resources/i18n/languages", currentLocale);
         initComponents();
-
-        mineField = new MineField();
-        mineField.attachMineFieldObserver(this);
-        initGameTypeCheckBoxes();
 
         newGame();
     }
 
     private void newGame() {
-        mineField.initializeMineField();
+        mineField = new MineField(gameType);
+        mineField.attachMineFieldObserver(this);
+        initGameTypeCheckBoxes();
 
         // add mines to the panel
         panelMineField.removeAll();
@@ -44,13 +45,14 @@ public class JMineFrame extends javax.swing.JFrame implements IMineFieldObserver
           Field field = it.next();
           
           GridBagConstraints gridBagConstraints = new GridBagConstraints();
-          gridBagConstraints.gridx = field.getCoordinate().getX();
-          gridBagConstraints.gridy = field.getCoordinate().getY();
+          Coordinate coordinate = mineField.findCoordinateFor(field);
+          gridBagConstraints.gridx = coordinate.getX();
+          gridBagConstraints.gridy = coordinate.getY();
 
           panelMineField.add(field, gridBagConstraints);
         }
 
-        String numberOfNimes = Integer.toString(mineField.getGameType().getNumberOfMines());
+        String numberOfNimes = Integer.toString(mineField.getMinesCount());
         textFieldMinesLeftCount.setText(numberOfNimes);
         buttonNewGame.setIcon(GameIcon.FACE.getIcon());
         this.pack();
@@ -73,11 +75,11 @@ public class JMineFrame extends javax.swing.JFrame implements IMineFieldObserver
             return;
         }
 
-        if (mineField.getGameType() == GameType.NOVICE) {
+        if (gameType == GameType.NOVICE) {
             checkBoxMenuItemGameNovice.setSelected(true);
-        } else if (mineField.getGameType() == GameType.INTERMEDIATE) {
+        } else if (gameType == GameType.INTERMEDIATE) {
             checkBoxMenuItemGameIntermediate.setSelected(true);
-        } else if (mineField.getGameType() == GameType.EXPERT) {
+        } else if (gameType == GameType.EXPERT) {
             checkBoxMenuItemGameExpert.setSelected(true);
         } else {
             checkBoxMenuItemGameUser.setSelected(true);
@@ -298,22 +300,22 @@ public class JMineFrame extends javax.swing.JFrame implements IMineFieldObserver
 	}//GEN-LAST:event_jMenuItemHintActionPerformed
 
 	private void checkBoxMenuItemGameUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxMenuItemGameUserActionPerformed
-            mineField.setGameType(GameType.USER);
+            gameType = GameType.USER;
             newGame();
 	}//GEN-LAST:event_checkBoxMenuItemGameUserActionPerformed
 
 	private void checkBoxMenuItemGameExpertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxMenuItemGameExpertActionPerformed
-            mineField.setGameType(GameType.EXPERT);
+            gameType = GameType.EXPERT;
             newGame();
 	}//GEN-LAST:event_checkBoxMenuItemGameExpertActionPerformed
 
 	private void checkBoxMenuItemGameIntermediateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxMenuItemGameIntermediateActionPerformed
-            mineField.setGameType(GameType.INTERMEDIATE);
+            gameType = GameType.INTERMEDIATE;
             newGame();
 	}//GEN-LAST:event_checkBoxMenuItemGameIntermediateActionPerformed
 
 	private void checkBoxMenuItemGameNoviceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxMenuItemGameNoviceActionPerformed
-            mineField.setGameType(GameType.NOVICE);
+            gameType =  GameType.NOVICE;
             newGame();
 	}//GEN-LAST:event_checkBoxMenuItemGameNoviceActionPerformed
 
@@ -332,7 +334,10 @@ public class JMineFrame extends javax.swing.JFrame implements IMineFieldObserver
 	}//GEN-LAST:event_jMenuItemNewGameActionPerformed
 
 	private void jMenuItemPreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemPreferencesActionPerformed
-            new JDialogPreferences(this, true).setVisible(true);
+            JDialogPreferences preferencesDialog = new JDialogPreferences(this, true, gameType);
+            preferencesDialog.setVisible(true);
+            gameType = preferencesDialog.getGameType();
+
             initGameTypeCheckBoxes();
             newGame();
 	}//GEN-LAST:event_jMenuItemPreferencesActionPerformed

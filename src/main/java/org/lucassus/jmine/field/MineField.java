@@ -1,9 +1,6 @@
 package org.lucassus.jmine.field;
 
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.lucassus.jmine.enums.CannotSetCustomGameException;
 import org.lucassus.jmine.enums.GameType;
 import org.lucassus.jmine.enums.GameIcon;
 import java.awt.Color;
@@ -15,26 +12,49 @@ import org.lucassus.jmine.field.observers.IMineFieldObserver;
 
 public class MineField implements IFieldObserver, Iterable<Field> {
 
+    private int height;
+    private int width;
+    private int fieldsCount;
     /**
-     * Liczba postawionych flag
+     * Number of flags on the Mine Field
      */
     private int flagsCount;
     /**
-     * Rodzaj gry
+     * Number of Mines
      */
-    // TODO remove this relation
-    private GameType gameType;
+    private int minesCount;
     /**
      * Tablica przechowujaca komorki pola minowego
      */
     private Field[][] fields;
     private IMineFieldObserver observer;
 
+    public MineField() {
+        flagsCount = 0;
+    }
+
     /**
      * Creates a new instance of MineField
      */
-    public MineField() {
-        gameType = GameType.NOVICE;
+    public MineField(GameType gameType) {
+        super();
+
+        height = gameType.getMineFieldHeight();
+        width = gameType.getMineFieldWidth();
+        fieldsCount = height * width;
+        minesCount = gameType.getNumberOfMines();
+
+        initializeMineField();
+    }
+
+    MineField(Field[][] fields, int minesCount) {
+        super();
+
+        this.fields = fields;
+        height = fields.length;
+        width = fields[0].length;
+        fieldsCount = height * width;
+        this.minesCount = minesCount;
     }
 
     /**
@@ -62,14 +82,14 @@ public class MineField implements IFieldObserver, Iterable<Field> {
     }
 
     private void randomizeMines() {
-        List<Field> fieldsWithMine = new ArrayList<Field>(gameType.getNumberOfMines());
+        List<Field> fieldsWithMine = new ArrayList<Field>(minesCount);
         Iterator<Field> it = iterator();
         while (it.hasNext()) {
             fieldsWithMine.add(it.next());
         }
 
         Collections.shuffle(fieldsWithMine);
-        fieldsWithMine = fieldsWithMine.subList(0, gameType.getNumberOfMines());
+        fieldsWithMine = fieldsWithMine.subList(0, minesCount);
         for (Field field : fieldsWithMine) {
             field.setHasMine(true);
         }
@@ -121,7 +141,7 @@ public class MineField implements IFieldObserver, Iterable<Field> {
      */
     public boolean allDetonated() {
         int detonatedFieldsCount = getDetonatedFieldsCount();
-        return detonatedFieldsCount == (gameType.getFieldsCount() - gameType.getNumberOfMines());
+        return detonatedFieldsCount == (fieldsCount - minesCount);
     }
 
     /**
@@ -142,48 +162,17 @@ public class MineField implements IFieldObserver, Iterable<Field> {
         observer.gameWin();
     }
 
-    public void initializeMineField(Field[][] fields, int numberOfMines) {
-        flagsCount = 0;
-
-        try {
-            gameType = GameType.USER;
-            gameType.setMineFieldHeight(fields.length);
-            gameType.setMineFieldWidth(fields[0].length);
-            gameType.setNumberOfMines(numberOfMines);
-        } catch (CannotSetCustomGameException ex) {
-            Logger.getLogger(MineField.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        this.fields = fields;
-        for (int y = 0; y < gameType.getMineFieldHeight(); y++) {
-            for (int x = 0; x < gameType.getMineFieldWidth(); x++) {
-                Coordinate coordinate = new Coordinate(x, y);
-
-                Field field = fields[y][x];
-                field.setCoordinate(coordinate);
-                field.attachObserver(this);
-            }
-        }
-
-        setupNeighborFields();
-        randomizeMines();
-    }
-
     /**
      * Tworzy pole minowe
      * @param panelMineField
      */
-    public void initializeMineField() {
-        flagsCount = 0;
-
+    private void initializeMineField() {
         // tworzymy przeciski reprezentujace komorki pola
-        fields = new Field[gameType.getMineFieldHeight()][gameType.getMineFieldWidth()];
-        for (int y = 0; y < gameType.getMineFieldHeight(); y++) {
-            for (int x = 0; x < gameType.getMineFieldWidth(); x++) {
-                Coordinate coordinate = new Coordinate(x, y);
+        fields = new Field[height][width];
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
 
                 Field field = new Field();
-                field.setCoordinate(coordinate);
                 field.attachObserver(this);
                 fields[y][x] = field;
             }
@@ -201,8 +190,9 @@ public class MineField implements IFieldObserver, Iterable<Field> {
     public List<Field> getNeighbourFieldsFor(Field field) {
         List<Field> neighbours = new ArrayList<Field>();
 
-        int x = field.getCoordinate().getX();
-        int y = field.getCoordinate().getY();
+        Coordinate coordinate = findCoordinateFor(field);
+        int x = coordinate.getX();
+        int y = coordinate.getY();
 
         for (int i = -1; i < 2; i++) {
             for (int j = -1; j < 2; j++) {
@@ -211,8 +201,8 @@ public class MineField implements IFieldObserver, Iterable<Field> {
                 }
 
                 if ((x + i >= 0) && (y + j >= 0)
-                        && (x + i < gameType.getMineFieldWidth())
-                        && (y + j < gameType.getMineFieldHeight())) {
+                        && (x + i < width)
+                        && (y + j < height)) {
                     neighbours.add(fields[y + j][x + i]);
                 }
             }
@@ -221,20 +211,19 @@ public class MineField implements IFieldObserver, Iterable<Field> {
         return neighbours;
     }
 
-    /**
-     * Zwraca rodzaj gry
-     * @return rodzaj gry (poziom trudnosci, gra uzytkownika)
-     */
-    public GameType getGameType() {
-        return gameType;
-    }
+    public Coordinate findCoordinateFor(Field field) {
+        Coordinate coordinate = null;
 
-    /**
-     * Ustawia rodzaj gry
-     * @param gameType rodzaj gry
-     */
-    public void setGameType(GameType gameType) {
-        this.gameType = gameType;
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if (fields[i][j] == field) {
+                    coordinate = new Coordinate(j, i);
+                    break;
+                }
+            }
+        }
+
+        return coordinate;
     }
 
     /**
@@ -288,16 +277,20 @@ public class MineField implements IFieldObserver, Iterable<Field> {
     }
 
     private int getMinesLeftCount() {
-        return gameType.getNumberOfMines() - flagsCount;
+        return minesCount - flagsCount;
     }
 
     public int getFlagsCount() {
         return flagsCount;
     }
 
+    public int getMinesCount() {
+        return minesCount;
+    }
+
     @Override
     public Iterator<Field> iterator() {
         return new MineFieldIterator(fields);
     }
-    
+
 }
