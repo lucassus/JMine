@@ -14,7 +14,6 @@ public class MineField implements IFieldObserver, Iterable<Field> {
 
     private int height;
     private int width;
-    private int fieldsCount;
     /**
      * Number of flags on the Mine Field
      */
@@ -39,22 +38,34 @@ public class MineField implements IFieldObserver, Iterable<Field> {
     public MineField(GameType gameType) {
         super();
 
-        height = gameType.getMineFieldHeight();
-        width = gameType.getMineFieldWidth();
-        fieldsCount = height * width;
-        minesCount = gameType.getNumberOfMines();
+        this.height = gameType.getMineFieldHeight();
+        this.width = gameType.getMineFieldWidth();
+        this.minesCount = gameType.getNumberOfMines();
 
-        initializeMineField();
+        this.fields = new Field[height][width];
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+
+                Field field = new Field();
+                field.attachObserver(this);
+                fields[y][x] = field;
+            }
+        }
+
+        setupNeighborFields();
+        randomizeMines();
     }
 
     MineField(Field[][] fields, int minesCount) {
         super();
 
-        this.fields = fields;
-        height = fields.length;
-        width = fields[0].length;
-        fieldsCount = height * width;
+        this.height = fields.length;
+        this.width = fields[0].length;
         this.minesCount = minesCount;
+
+        this.fields = fields;
+        
+        setupNeighborFields();
     }
 
     /**
@@ -66,7 +77,7 @@ public class MineField implements IFieldObserver, Iterable<Field> {
         observer.gameOver();
     }
 
-    private int getDetonatedFieldsCount() {
+    public int getDetonatedFieldsCount() {
         int detonatedFieldsCount = 0;
 
         Iterator<Field> it = iterator();
@@ -109,7 +120,7 @@ public class MineField implements IFieldObserver, Iterable<Field> {
         }
     }
 
-    private void showMines() {
+    public void showMines() {
         Iterator<Field> it = iterator();
         while (it.hasNext()) {
             Field field = it.next();
@@ -118,20 +129,18 @@ public class MineField implements IFieldObserver, Iterable<Field> {
                 continue;
             }
 
-            if (field.hasMine()) {
+            if (field.hasMineWithoutFlag()) {
                 field.setForeground(Color.red);
-
-                if (field.hasFlag()) {
-                    field.setIcon(GameIcon.FLAG.getIcon());
-                } else {
-                    field.setIcon(GameIcon.MINE.getIcon());
-                }
-            } else {
-                if (field.hasFlag()) {
-                    // nie trafilismy z flaga
-                    field.setIcon(GameIcon.FLAG_WRONG.getIcon());
-                }
+                field.setIcon(GameIcon.MINE.getIcon());
+                continue;
             }
+
+            if (field.hasFlagWithoutMine()) {
+                field.setIcon(GameIcon.FLAG_WRONG.getIcon());
+                continue;
+            }
+
+            field.detonate();
         }
     }
 
@@ -141,7 +150,7 @@ public class MineField implements IFieldObserver, Iterable<Field> {
      */
     public boolean allDetonated() {
         int detonatedFieldsCount = getDetonatedFieldsCount();
-        return detonatedFieldsCount == (fieldsCount - minesCount);
+        return detonatedFieldsCount == (getFieldsCount() - minesCount);
     }
 
     /**
@@ -160,26 +169,6 @@ public class MineField implements IFieldObserver, Iterable<Field> {
         }
 
         observer.gameWin();
-    }
-
-    /**
-     * Tworzy pole minowe
-     * @param panelMineField
-     */
-    private void initializeMineField() {
-        // tworzymy przeciski reprezentujace komorki pola
-        fields = new Field[height][width];
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-
-                Field field = new Field();
-                field.attachObserver(this);
-                fields[y][x] = field;
-            }
-        }
-
-        setupNeighborFields();
-        randomizeMines();
     }
 
     /**
@@ -233,7 +222,7 @@ public class MineField implements IFieldObserver, Iterable<Field> {
         List<Field> fieldsLeft = new ArrayList<Field>();
         Iterator<Field> it = iterator();
         while (it.hasNext()) {
-            Field field = iterator().next();
+            Field field = it.next();
 
             if (field.isDetonated() || field.hasFlag() || field.hasMine()) {
                 continue;
@@ -291,6 +280,18 @@ public class MineField implements IFieldObserver, Iterable<Field> {
     @Override
     public Iterator<Field> iterator() {
         return new MineFieldIterator(fields);
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getFieldsCount() {
+        return width * height;
     }
 
 }

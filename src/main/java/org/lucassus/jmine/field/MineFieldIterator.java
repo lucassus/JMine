@@ -21,7 +21,7 @@ class MineFieldIterator implements Iterator<Field> {
 
     @Override
     public Field next() {
-        if (y >= fields.length || x >= fields[y].length) {
+        if (!hasNext()) {
             return null;
         }
 

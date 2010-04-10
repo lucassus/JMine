@@ -15,7 +15,7 @@ public class Field extends JButton {
     /**
      * Rozmiar przycisku z mina (w pikselach)
      */
-    private final int mineSize = 20;
+    private static final int FIELD_SIZE = 20;
     /**
      * Okresla czy na danym polu znajduje sie mina
      */
@@ -39,7 +39,7 @@ public class Field extends JButton {
         super();
         setText(null);
         setMargin(new Insets(0, 0, 0, 0));
-        setPreferredSize(new Dimension(mineSize, mineSize));
+        setPreferredSize(new Dimension(FIELD_SIZE, FIELD_SIZE));
         addMouseListener(new FieldMouseListener(this));
 
         neighborFields = new ArrayList<Field>();
@@ -193,7 +193,7 @@ public class Field extends JButton {
         } else if (minesCount == 8) {
             setForeground(Color.cyan.darker());
         }
-        
+
         setText(Integer.toString(minesCount));
     }
 

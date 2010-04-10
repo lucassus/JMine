@@ -1,7 +1,10 @@
 package org.lucassus.jmine.field;
 
+import java.awt.Color;
 import java.util.List;
 import junit.framework.TestCase;
+import org.lucassus.jmine.enums.GameIcon;
+import org.lucassus.jmine.enums.GameType;
 import org.lucassus.jmine.field.observers.IMineFieldObserver;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -11,9 +14,9 @@ public class MineFieldTest extends TestCase {
 
     private Field[][] fields;
     @Mock
-    private Field fieldWithMine;
+    private Field field00;
     @Mock
-    private Field field2, field3, field4, field5, field6, field7, field8, field9;
+    private Field field01, field02, field10, field11, field12, field20, field21, field22;
     private int minesCount;
 
     private MineField instance;
@@ -27,13 +30,24 @@ public class MineFieldTest extends TestCase {
 
         minesCount = 1;
         fields = new Field[][] {
-            {fieldWithMine, field2, field3},
-            {field4, field5, field6},
-            {field7, field8, field9}
+            {field00, field01, field02},
+            {field10, field11, field12},
+            {field20, field21, field22}
         };
 
         instance = new MineField(fields, minesCount);
         instance.attachMineFieldObserver(observerMock);
+    }
+
+    public void testConstructor() {
+        GameType expertGame = GameType.EXPERT;
+        MineField mineField = new MineField(expertGame);
+        
+        assertEquals(expertGame.getMineFieldHeight(), mineField.getHeight());
+        assertEquals(expertGame.getMineFieldWidth(), mineField.getWidth());
+        assertEquals(expertGame.getFieldsCount(), mineField.getFieldsCount());
+        assertEquals(expertGame.getNumberOfMines(), mineField.getMinesCount());
+        assertEquals(0, mineField.getFlagsCount());
     }
 
     /**
@@ -78,15 +92,15 @@ public class MineFieldTest extends TestCase {
     public void testFindCoordinateFor() {
         Coordinate coordinate = null;
 
-        coordinate = instance.findCoordinateFor(fieldWithMine);
+        coordinate = instance.findCoordinateFor(field00);
         assertEquals(0, coordinate.getX());
         assertEquals(0, coordinate.getY());
 
-        coordinate = instance.findCoordinateFor(field6);
+        coordinate = instance.findCoordinateFor(field12);
         assertEquals(2, coordinate.getX());
         assertEquals(1, coordinate.getY());
 
-        coordinate = instance.findCoordinateFor(field8);
+        coordinate = instance.findCoordinateFor(field21);
         assertEquals(1, coordinate.getX());
         assertEquals(2, coordinate.getY());
     }
@@ -94,35 +108,72 @@ public class MineFieldTest extends TestCase {
     public void testGetNeighbourFieldsFor() {
         List<Field> neighbourFields = null;
 
-        neighbourFields = instance.getNeighbourFieldsFor(fieldWithMine);
+        neighbourFields = instance.getNeighbourFieldsFor(field00);
         assertEquals(3, neighbourFields.size());
-        assertTrue(neighbourFields.contains(field2));
-        assertTrue(neighbourFields.contains(field4));
-        assertTrue(neighbourFields.contains(field5));
+        assertTrue(neighbourFields.contains(field01));
+        assertTrue(neighbourFields.contains(field10));
+        assertTrue(neighbourFields.contains(field11));
 
-        neighbourFields = instance.getNeighbourFieldsFor(field4);
+        neighbourFields = instance.getNeighbourFieldsFor(field10);
         assertEquals(5, neighbourFields.size());
-        assertTrue(neighbourFields.contains(fieldWithMine));
-        assertTrue(neighbourFields.contains(field2));
-        assertTrue(neighbourFields.contains(field5));
-        assertTrue(neighbourFields.contains(field7));
-        assertTrue(neighbourFields.contains(field8));
+        assertTrue(neighbourFields.contains(field00));
+        assertTrue(neighbourFields.contains(field01));
+        assertTrue(neighbourFields.contains(field11));
+        assertTrue(neighbourFields.contains(field20));
+        assertTrue(neighbourFields.contains(field21));
 
-        neighbourFields = instance.getNeighbourFieldsFor(field5);
+        neighbourFields = instance.getNeighbourFieldsFor(field11);
         assertEquals(8, neighbourFields.size());
-        assertTrue(neighbourFields.contains(fieldWithMine));
-        assertTrue(neighbourFields.contains(field2));
-        assertTrue(neighbourFields.contains(field3));
-        assertTrue(neighbourFields.contains(field4));
-        assertTrue(neighbourFields.contains(field6));
-        assertTrue(neighbourFields.contains(field7));
-        assertTrue(neighbourFields.contains(field8));
-        assertTrue(neighbourFields.contains(field9));
+        assertTrue(neighbourFields.contains(field00));
+        assertTrue(neighbourFields.contains(field01));
+        assertTrue(neighbourFields.contains(field02));
+        assertTrue(neighbourFields.contains(field10));
+        assertTrue(neighbourFields.contains(field12));
+        assertTrue(neighbourFields.contains(field20));
+        assertTrue(neighbourFields.contains(field21));
+        assertTrue(neighbourFields.contains(field22));
 
-        neighbourFields = instance.getNeighbourFieldsFor(field9);
+        neighbourFields = instance.getNeighbourFieldsFor(field22);
         assertEquals(3, neighbourFields.size());
-        assertTrue(neighbourFields.contains(field5));
-        assertTrue(neighbourFields.contains(field6));
-        assertTrue(neighbourFields.contains(field8));
+        assertTrue(neighbourFields.contains(field11));
+        assertTrue(neighbourFields.contains(field12));
+        assertTrue(neighbourFields.contains(field21));
+    }
+
+    public void testGetDetonatedFieldsCount() {
+        when(field00.isDetonated()).thenReturn(true);
+        when(field01.isDetonated()).thenReturn(true);
+
+        assertEquals(2, instance.getDetonatedFieldsCount());
+    }
+
+    public void testHint() {
+        when(field00.hasMine()).thenReturn(true);
+        when(field01.isDetonated()).thenReturn(true);
+        when(field02.hasFlag()).thenReturn(true);
+        when(field10.hasFlag()).thenReturn(true);
+        when(field11.hasFlag()).thenReturn(true);
+        when(field12.hasFlag()).thenReturn(true);
+        when(field20.hasFlag()).thenReturn(true);
+        when(field21.hasFlag()).thenReturn(true);
+        when(field21.hasFlag()).thenReturn(true);
+
+        instance.hint();
+        verify(field22).detonate();
+    }
+
+    public void testShowMines() {
+        when(field00.hasMineWithoutFlag()).thenReturn(true);
+        when(field01.isDetonated()).thenReturn(true);
+        when(field02.hasFlagWithoutMine()).thenReturn(true);
+
+        instance.showMines();
+
+        verify(field00).setForeground(Color.red);
+        verify(field00).setIcon(GameIcon.MINE.getIcon());
+        verify(field00, never()).detonate();
+        verify(field02).setIcon(GameIcon.FLAG_WRONG.getIcon());
+        verify(field02, never()).detonate();
+        verify(field22).detonate();
     }
 }
