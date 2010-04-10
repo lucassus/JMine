@@ -1,6 +1,9 @@
 package org.lucassus.jmine.field;
 
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.lucassus.jmine.enums.CannotSetCustomGameException;
 import org.lucassus.jmine.enums.GameType;
 import org.lucassus.jmine.enums.GameIcon;
 import java.awt.Color;
@@ -72,6 +75,20 @@ public class MineField implements IFieldObserver, Iterable<Field> {
         }
     }
 
+    /**
+     * Set neighbour fields for each field.
+     */
+    private void setupNeighborFields() {
+        Iterator<Field> it = iterator();
+        while (it.hasNext()) {
+            Field field = it.next();
+            field.setNeighborFields(new ArrayList<Field>());
+            for (Field neighbourField : getNeighbourFieldsFor(field)) {
+                field.addNeighborField(neighbourField);
+            }
+        }
+    }
+
     private void showMines() {
         Iterator<Field> it = iterator();
         while (it.hasNext()) {
@@ -125,6 +142,33 @@ public class MineField implements IFieldObserver, Iterable<Field> {
         observer.gameWin();
     }
 
+    public void initializeMineField(Field[][] fields, int numberOfMines) {
+        flagsCount = 0;
+
+        try {
+            gameType = GameType.USER;
+            gameType.setMineFieldHeight(fields.length);
+            gameType.setMineFieldWidth(fields[0].length);
+            gameType.setNumberOfMines(numberOfMines);
+        } catch (CannotSetCustomGameException ex) {
+            Logger.getLogger(MineField.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        this.fields = fields;
+        for (int y = 0; y < gameType.getMineFieldHeight(); y++) {
+            for (int x = 0; x < gameType.getMineFieldWidth(); x++) {
+                Coordinate coordinate = new Coordinate(x, y);
+
+                Field field = fields[y][x];
+                field.setCoordinate(coordinate);
+                field.attachObserver(this);
+            }
+        }
+
+        setupNeighborFields();
+        randomizeMines();
+    }
+
     /**
      * Tworzy pole minowe
      * @param panelMineField
@@ -145,20 +189,16 @@ public class MineField implements IFieldObserver, Iterable<Field> {
             }
         }
 
-        // set neighbour fields for each field
-        Iterator<Field> it = iterator();
-        while (it.hasNext()) {
-            Field field = it.next();
-
-            for (Field neighbourField : getNeighbourFieldsFor(field)) {
-                field.addNeighborField(neighbourField);
-            }
-        }
-
+        setupNeighborFields();
         randomizeMines();
     }
 
-    private List<Field> getNeighbourFieldsFor(Field field) {
+    /**
+     * Get collection of neighbour fields for given field.
+     * @param field the field
+     * @return collection of neighbour fields
+     */
+    public List<Field> getNeighbourFieldsFor(Field field) {
         List<Field> neighbours = new ArrayList<Field>();
 
         int x = field.getCoordinate().getX();
@@ -173,7 +213,7 @@ public class MineField implements IFieldObserver, Iterable<Field> {
                 if ((x + i >= 0) && (y + j >= 0)
                         && (x + i < gameType.getMineFieldWidth())
                         && (y + j < gameType.getMineFieldHeight())) {
-                    neighbours.add(fields[x + i][y + j]);
+                    neighbours.add(fields[y + j][x + i]);
                 }
             }
         }
