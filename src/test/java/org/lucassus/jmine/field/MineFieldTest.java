@@ -2,15 +2,18 @@ package org.lucassus.jmine.field;
 
 import java.awt.Color;
 import java.util.List;
-import junit.framework.TestCase;
 import org.lucassus.jmine.enums.GameIcon;
 import org.lucassus.jmine.enums.GameType;
 import org.lucassus.jmine.field.observers.IMineFieldObserver;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 import static org.mockito.Mockito.*;
+import static org.testng.Assert.*;
 
-public class MineFieldTest extends TestCase {
+@Test
+public class MineFieldTest {
 
     private Field[][] fields;
     @Mock
@@ -23,9 +26,8 @@ public class MineFieldTest extends TestCase {
     @Mock
     private IMineFieldObserver observerMock;
 
-    @Override
+    @BeforeMethod
     protected void setUp() throws Exception {
-        super.setUp();
         MockitoAnnotations.initMocks(this);
 
         minesCount = 1;
@@ -39,7 +41,8 @@ public class MineFieldTest extends TestCase {
         instance.attachMineFieldObserver(observerMock);
     }
 
-    public void testConstructor() {
+    @Test
+    public void constructor() {
         GameType expertGame = GameType.EXPERT;
         MineField mineField = new MineField(expertGame);
         
@@ -53,7 +56,8 @@ public class MineFieldTest extends TestCase {
     /**
      * Test of mineWasDetonated method, of class MineField.
      */
-    public void testMineWasDetonated() {
+    @Test
+    public void mineWasDetonated() {
         instance.mineWasDetonated();
         verify(observerMock).gameOver();
     }
@@ -61,7 +65,8 @@ public class MineFieldTest extends TestCase {
     /**
      * Test of fieldWasDetonated method, of class MineField.
      */
-    public void testFieldWasDetonated() {
+    @Test
+    public void fieldWasDetonated() {
         MineField instanceUnderSpy = spy(instance);
         doReturn(true).when(instanceUnderSpy).allDetonated();
 
@@ -72,7 +77,8 @@ public class MineFieldTest extends TestCase {
     /**
      * Test of flagWasSet method, of class MineField.
      */
-    public void testFlagWasSet() {
+    @Test
+    public void flagWasSet() {
         assertEquals(0, instance.getFlagsCount());
         instance.flagWasSet();
         assertEquals(1, instance.getFlagsCount());
@@ -82,14 +88,16 @@ public class MineFieldTest extends TestCase {
     /**
      * Test of flagWasRemoved method, of class MineField.
      */
-    public void testFlagWasRemoved() {
+    @Test
+    public void flagWasRemoved() {
         assertEquals(0, instance.getFlagsCount());
         instance.flagWasRemoved();
         assertEquals(-1, instance.getFlagsCount());
         verify(observerMock).updateMinesLeftCount(instance.getMinesCount() + 1);
     }
 
-    public void testFindCoordinateFor() {
+    @Test
+    public void findCoordinateFor() {
         Coordinate coordinate = null;
 
         coordinate = instance.findCoordinateFor(field00);
@@ -105,7 +113,8 @@ public class MineFieldTest extends TestCase {
         assertEquals(2, coordinate.getY());
     }
 
-    public void testGetNeighbourFieldsFor() {
+    @Test
+    public void getNeighbourFieldsFor() {
         List<Field> neighbourFields = null;
 
         neighbourFields = instance.getNeighbourFieldsFor(field00);
@@ -140,14 +149,16 @@ public class MineFieldTest extends TestCase {
         assertTrue(neighbourFields.contains(field21));
     }
 
-    public void testGetDetonatedFieldsCount() {
+    @Test
+    public void getDetonatedFieldsCount() {
         when(field00.isDetonated()).thenReturn(true);
         when(field01.isDetonated()).thenReturn(true);
 
         assertEquals(2, instance.getDetonatedFieldsCount());
     }
 
-    public void testHint() {
+    @Test
+    public void hint() {
         when(field00.hasMine()).thenReturn(true);
         when(field01.isDetonated()).thenReturn(true);
         when(field02.hasFlag()).thenReturn(true);
@@ -162,7 +173,8 @@ public class MineFieldTest extends TestCase {
         verify(field22).detonate();
     }
 
-    public void testShowMines() {
+    @Test
+    public void showMines() {
         when(field00.hasMineWithoutFlag()).thenReturn(true);
         when(field01.isDetonated()).thenReturn(true);
         when(field02.hasFlagWithoutMine()).thenReturn(true);

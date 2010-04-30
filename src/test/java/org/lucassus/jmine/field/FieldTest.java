@@ -2,14 +2,17 @@ package org.lucassus.jmine.field;
 
 import java.util.ArrayList;
 import java.util.List;
-import junit.framework.TestCase;
 import org.lucassus.jmine.enums.GameIcon;
 import org.lucassus.jmine.field.observers.IFieldObserver;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 import static org.mockito.Mockito.*;
+import static org.testng.Assert.*;
 
-public class FieldTest extends TestCase {
+@Test
+public class FieldTest {
 
     private Field instance;
     private List<Field> neighborFields;
@@ -20,9 +23,8 @@ public class FieldTest extends TestCase {
     @Mock
     private Field neighborField1, neighborField2, neighborField3, neighborField4;
 
-    @Override
+    @BeforeMethod
     public void setUp() throws Exception {
-        super.setUp();
         MockitoAnnotations.initMocks(this);
 
         neighborFields = new ArrayList<Field>();
@@ -39,7 +41,8 @@ public class FieldTest extends TestCase {
     /**
      * Test of getNeighborMinesCount method, of class Field.
      */
-    public void testGetNeighborMinesCount() {
+    @Test
+    public void getNeighborMinesCount() {
         when(neighborField1.hasMine()).thenReturn(true);
         when(neighborField2.hasMine()).thenReturn(true);
 
@@ -50,7 +53,8 @@ public class FieldTest extends TestCase {
     /**
      * Test of getNeighborFlagsCount method, of class Field.
      */
-    public void testGetNeighborFlagsCount() {
+    @Test
+    public void getNeighborFlagsCount() {
         when(neighborField1.hasFlag()).thenReturn(true);
         when(neighborField3.hasFlag()).thenReturn(true);
 
@@ -61,7 +65,8 @@ public class FieldTest extends TestCase {
     /**
      * Test of hasMine method, of class Field.
      */
-    public void testHasMine() {
+    @Test
+    public void hasMine() {
         assertFalse(instance.hasMine());
 
         instance.setHasMine(true);
@@ -71,7 +76,8 @@ public class FieldTest extends TestCase {
     /**
      * Test of isDetonated method, of class Field.
      */
-    public void testIsDetonated() {
+    @Test
+    public void isDetonated() {
         assertFalse(instance.isDetonated());
 
         instance.setDetonated(true);
@@ -81,7 +87,8 @@ public class FieldTest extends TestCase {
     /**
      * Test of hasFlag method, of class Field.
      */
-    public void testHasFlag() {
+    @Test
+    public void hasFlag() {
         assertFalse(instance.hasFlag());
 
         instance.setHasFlag(true);
@@ -91,7 +98,8 @@ public class FieldTest extends TestCase {
     /**
      * Test of getNeighborFields method, of class Field.
      */
-    public void testGetNeighborFields() {
+    @Test
+    public void getNeighborFields() {
         List result = instance.getNeighborFields();
         assertEquals(neighborFields, result);
     }
@@ -99,12 +107,14 @@ public class FieldTest extends TestCase {
     /**
      * Test of detonate method, of class Field.
      */
-    public void testDetonate() {
+    @Test
+    public void detonate() {
         instance.detonate();
         assertTrue(instance.isDetonated());
     }
 
-    public void testDetonateNeighbourFields() {
+    @Test
+    public void detonateNeighbourFields() {
         when(neighborField1.hasFlagWithoutMine()).thenReturn(true);
         when(neighborField2.hasMineWithoutFlag()).thenReturn(true);
         when(neighborField4.hasMineWithFlag()).thenReturn(true);
@@ -125,7 +135,8 @@ public class FieldTest extends TestCase {
     /**
      * Test of hasMineWithFlag method, of class Field.
      */
-    public void testHasMineWithFlag() {
+    @Test
+    public void hasMineWithFlag() {
         assertFalse(instance.hasMineWithFlag());
 
         instance.setHasMine(true);
@@ -136,7 +147,8 @@ public class FieldTest extends TestCase {
     /**
      * Test of hasFlagWithoutMine method, of class Field.
      */
-    public void testHasFlagWithoutMine() {
+    @Test
+    public void hasFlagWithoutMine() {
         assertFalse(instance.hasFlagWithoutMine());
 
         instance.setHasFlag(true);
@@ -146,7 +158,8 @@ public class FieldTest extends TestCase {
     /**
      * Test of hasMineWithoutFlag method, of class Field.
      */
-    public void testHasMineWithoutFlag() {
+    @Test
+    public void hasMineWithoutFlag() {
         assertFalse(instance.hasMineWithoutFlag());
 
         instance.setHasMine(true);

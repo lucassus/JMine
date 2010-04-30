@@ -1,15 +1,17 @@
 package org.lucassus.jmine.field.listeners;
 
 import java.awt.event.MouseEvent;
-import junit.framework.TestCase;
 import org.lucassus.jmine.enums.GameIcon;
 import org.lucassus.jmine.field.Field;
 import org.lucassus.jmine.field.observers.IFieldObserver;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 import static org.mockito.Mockito.*;
 
-public class FieldMouseListenerTest extends TestCase {
+@Test
+public class FieldMouseListenerTest {
 
     @Mock
     private Field fieldMock;
@@ -22,16 +24,15 @@ public class FieldMouseListenerTest extends TestCase {
 
     private FieldMouseListener instance;
 
-    @Override
+    @BeforeMethod
     protected void setUp() throws Exception {
-        super.setUp();
-
         MockitoAnnotations.initMocks(this);
         when(fieldMock.getObserver()).thenReturn(observerMock);
         instance = new FieldMouseListener(fieldMock);
     }
 
-    public void testLeftMouseButtonClicked() {
+    @Test
+    public void leftMouseButtonClicked() {
         when(mouseEventMock.getButton()).thenReturn(MouseEvent.BUTTON1);
         when(fieldMock.hasMine()).thenReturn(true);
 
@@ -42,7 +43,8 @@ public class FieldMouseListenerTest extends TestCase {
         verify(observerMock).mineWasDetonated();
     }
 
-    public void testRightMouseButtonClicked() {
+    @Test
+    public void rightMouseButtonClicked() {
         when(mouseEventMock.getButton()).thenReturn(MouseEvent.BUTTON3);
         when(fieldMock.isDetonated()).thenReturn(false);
         when(fieldMock.hasFlag()).thenReturn(false);
@@ -53,7 +55,8 @@ public class FieldMouseListenerTest extends TestCase {
         verify(observerMock).flagWasSet();
     }
 
-    public void testMiddleMouseButtonClickedTest() {
+    @Test
+    public void middleMouseButtonClickedTest() {
         when(mouseEventMock.getButton()).thenReturn(MouseEvent.BUTTON2);
         when(fieldMock.isDetonated()).thenReturn(true);
         when(fieldMock.getNeighborFlagsCount()).thenReturn(3);
