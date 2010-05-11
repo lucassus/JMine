@@ -1,6 +1,8 @@
 package org.lucassus.jmine;
 
 import java.awt.GridBagConstraints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Iterator;
 import org.lucassus.jmine.dialogs.JDialogAbout;
 import org.lucassus.jmine.dialogs.JDialogPreferences;
@@ -10,6 +12,7 @@ import java.util.ResourceBundle;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 import org.lucassus.jmine.field.Field;
 import org.lucassus.jmine.enums.GameIcon;
 import org.lucassus.jmine.enums.GameType;
@@ -18,19 +21,37 @@ import org.lucassus.jmine.field.observers.IMineFieldObserver;
 
 public class JMineFrame extends javax.swing.JFrame implements IMineFieldObserver {
 
+    private static final int TIMER_DELAY = 1000;
     private MineField mineField;
     private Locale currentLocale;
     private ResourceBundle messages;
     private GameType gameType;
+    private int counter;
+    private Timer timer;
 
     /** Creates new form JMineFrame */
     public JMineFrame() {
         gameType = GameType.NOVICE;
         currentLocale = new Locale("en", "GB");
         messages = ResourceBundle.getBundle("resources/i18n/languages", currentLocale);
+
+        initTimer();
         initComponents();
 
         newGame();
+    }
+
+    private void initTimer() {
+        ActionListener taskPerformer = new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                counter++;
+                textFieldCounter.setText(Integer.toString(counter));
+            }
+        };
+        
+        timer = new Timer(TIMER_DELAY, taskPerformer);
     }
 
     private void newGame() {
@@ -42,20 +63,36 @@ public class JMineFrame extends javax.swing.JFrame implements IMineFieldObserver
         panelMineField.removeAll();
         Iterator<Field> it = mineField.iterator();
         while (it.hasNext()) {
-          Field field = it.next();
-          
-          GridBagConstraints gridBagConstraints = new GridBagConstraints();
-          Coordinate coordinate = mineField.findCoordinateFor(field);
-          gridBagConstraints.gridx = coordinate.getX();
-          gridBagConstraints.gridy = coordinate.getY();
+            Field field = it.next();
 
-          panelMineField.add(field, gridBagConstraints);
+            GridBagConstraints gridBagConstraints = new GridBagConstraints();
+            Coordinate coordinate = mineField.findCoordinateFor(field);
+            gridBagConstraints.gridx = coordinate.getX();
+            gridBagConstraints.gridy = coordinate.getY();
+
+            panelMineField.add(field, gridBagConstraints);
         }
 
         String numberOfNimes = Integer.toString(mineField.getMinesCount());
         textFieldMinesLeftCount.setText(numberOfNimes);
         buttonNewGame.setIcon(GameIcon.FACE.getIcon());
+
+        startTimer();
         this.pack();
+    }
+
+    private void startTimer() {
+        if (!timer.isRunning()) {
+            textFieldCounter.setText("0");
+            counter = 0;
+            timer.start();
+        }
+    }
+
+    private void stopTimer() {
+        if (timer.isRunning()) {
+            timer.stop();
+        }
     }
 
     public JPanel getMineFieldPanel() {
@@ -157,6 +194,7 @@ public class JMineFrame extends javax.swing.JFrame implements IMineFieldObserver
 
         textFieldCounter.setEditable(false);
         textFieldCounter.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        textFieldCounter.setText("0");
         textFieldCounter.setPreferredSize(new java.awt.Dimension(50, 19));
         jPanel1.add(textFieldCounter);
 
@@ -296,66 +334,66 @@ public class JMineFrame extends javax.swing.JFrame implements IMineFieldObserver
     }// </editor-fold>//GEN-END:initComponents
 
 	private void jMenuItemHintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemHintActionPerformed
-            mineField.hint();
+        mineField.hint();
 	}//GEN-LAST:event_jMenuItemHintActionPerformed
 
 	private void checkBoxMenuItemGameUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxMenuItemGameUserActionPerformed
-            gameType = GameType.USER;
-            newGame();
+        gameType = GameType.USER;
+        newGame();
 	}//GEN-LAST:event_checkBoxMenuItemGameUserActionPerformed
 
 	private void checkBoxMenuItemGameExpertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxMenuItemGameExpertActionPerformed
-            gameType = GameType.EXPERT;
-            newGame();
+        gameType = GameType.EXPERT;
+        newGame();
 	}//GEN-LAST:event_checkBoxMenuItemGameExpertActionPerformed
 
 	private void checkBoxMenuItemGameIntermediateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxMenuItemGameIntermediateActionPerformed
-            gameType = GameType.INTERMEDIATE;
-            newGame();
+        gameType = GameType.INTERMEDIATE;
+        newGame();
 	}//GEN-LAST:event_checkBoxMenuItemGameIntermediateActionPerformed
 
 	private void checkBoxMenuItemGameNoviceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxMenuItemGameNoviceActionPerformed
-            gameType =  GameType.NOVICE;
-            newGame();
+        gameType = GameType.NOVICE;
+        newGame();
 	}//GEN-LAST:event_checkBoxMenuItemGameNoviceActionPerformed
 
 	private void buttonNewGameMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonNewGameMousePressed
-            if (evt.getButton() == java.awt.event.MouseEvent.MOUSE_PRESSED) {
-                buttonNewGame.setIcon(GameIcon.FACE.getIcon());
-            }
+        if (evt.getButton() == java.awt.event.MouseEvent.MOUSE_PRESSED) {
+            buttonNewGame.setIcon(GameIcon.FACE.getIcon());
+        }
 	}//GEN-LAST:event_buttonNewGameMousePressed
 
 	private void buttonNewGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonNewGameActionPerformed
-            newGame();
+        newGame();
 	}//GEN-LAST:event_buttonNewGameActionPerformed
 
 	private void jMenuItemNewGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemNewGameActionPerformed
-            newGame();
+        newGame();
 	}//GEN-LAST:event_jMenuItemNewGameActionPerformed
 
 	private void jMenuItemPreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemPreferencesActionPerformed
-            JDialogPreferences preferencesDialog = new JDialogPreferences(this, true, gameType);
-            preferencesDialog.setVisible(true);
-            gameType = preferencesDialog.getGameType();
+        JDialogPreferences preferencesDialog = new JDialogPreferences(this, true, gameType);
+        preferencesDialog.setVisible(true);
+        gameType = preferencesDialog.getGameType();
 
-            initGameTypeCheckBoxes();
-            newGame();
+        initGameTypeCheckBoxes();
+        newGame();
 	}//GEN-LAST:event_jMenuItemPreferencesActionPerformed
 
 	private void checkBoxMenuItemAlwaysOnTopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxMenuItemAlwaysOnTopActionPerformed
-            if (checkBoxMenuItemAlwaysOnTop.isSelected()) {
-                this.setAlwaysOnTop(true);
-            } else {
-                this.setAlwaysOnTop(false);
-            }
+        if (checkBoxMenuItemAlwaysOnTop.isSelected()) {
+            this.setAlwaysOnTop(true);
+        } else {
+            this.setAlwaysOnTop(false);
+        }
 	}//GEN-LAST:event_checkBoxMenuItemAlwaysOnTopActionPerformed
 
 	private void jMenuItemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemExitActionPerformed
-            System.exit(0);
+        System.exit(0);
 	}//GEN-LAST:event_jMenuItemExitActionPerformed
 
 	private void jMenuItemAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAboutActionPerformed
-            new JDialogAbout(this, true).setVisible(true);
+        new JDialogAbout(this, true).setVisible(true);
 	}//GEN-LAST:event_jMenuItemAboutActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroupGameType;
@@ -395,10 +433,12 @@ public class JMineFrame extends javax.swing.JFrame implements IMineFieldObserver
     public void gameWin() {
         textFieldMinesLeftCount.setText("0");
         buttonNewGame.setIcon(GameIcon.FACE_WIN.getIcon());
+        stopTimer();
     }
 
     @Override
     public void gameOver() {
         buttonNewGame.setIcon(GameIcon.FACE_DEAD.getIcon());
+        stopTimer();
     }
 }
