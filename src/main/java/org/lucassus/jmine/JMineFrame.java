@@ -82,6 +82,7 @@ public class JMineFrame extends javax.swing.JFrame implements IMineFieldObserver
     }
 
     private void startTimer() {
+        stopTimer();
         if (!timer.isRunning()) {
             textFieldCounter.setText("0");
             counter = 0;
