@@ -1,11 +1,11 @@
 package org.lucassus.jmine.field.listeners;
 
+import java.awt.event.MouseAdapter;
 import org.lucassus.jmine.enums.GameIcon;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import org.lucassus.jmine.field.Field;
 
-public class FieldMouseListener implements MouseListener {
+public class FieldMouseListener extends MouseAdapter {
 
     private Field field;
 
@@ -66,22 +66,6 @@ public class FieldMouseListener implements MouseListener {
         } else if (event.getButton() == MouseEvent.BUTTON2) {
             middleMouseButtonClick();
         }
-    }
-
-    @Override
-    public void mousePressed(MouseEvent event) {
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent event) {
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent event) {
-    }
-
-    @Override
-    public void mouseExited(MouseEvent event) {
     }
 
 }
