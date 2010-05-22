@@ -1,4 +1,4 @@
-package org.lucassus.jmine.dialogs;
+package org.lucassus.jmine.gui.dialogs;
 
 import java.awt.Rectangle;
 
@@ -46,7 +46,7 @@ public class JDialogAbout extends javax.swing.JDialog {
 
         textArea.setBackground(new java.awt.Color(238, 238, 238));
         textArea.setEditable(false);
-        textArea.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        textArea.setFont(new java.awt.Font("Arial", 0, 12));
         textArea.setText("Author:\tŁukasz Bandzarewicz\nEmail:\tlukasz.bandzarewicz@gmail.com\n\t(C) 2005 - 2010");
         getContentPane().add(textArea, new java.awt.GridBagConstraints());
 

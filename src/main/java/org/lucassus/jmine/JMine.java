@@ -1,5 +1,6 @@
 package org.lucassus.jmine;
 
+import org.lucassus.jmine.gui.JMineFrame;
 import org.apache.log4j.BasicConfigurator;
 
 /**
@@ -7,6 +8,9 @@ import org.apache.log4j.BasicConfigurator;
  * @author lucassus
  */
 public class JMine {
+
+    private JMine() {
+    }
 
     /**
      * Entry point.

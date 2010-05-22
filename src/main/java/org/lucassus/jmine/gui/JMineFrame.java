@@ -1,11 +1,11 @@
-package org.lucassus.jmine;
+package org.lucassus.jmine.gui;
 
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Iterator;
-import org.lucassus.jmine.dialogs.JDialogAbout;
-import org.lucassus.jmine.dialogs.JDialogPreferences;
+import org.lucassus.jmine.gui.dialogs.JDialogAbout;
+import org.lucassus.jmine.gui.dialogs.JDialogPreferences;
 import org.lucassus.jmine.field.MineField;
 import java.util.Locale;
 import java.util.ResourceBundle;

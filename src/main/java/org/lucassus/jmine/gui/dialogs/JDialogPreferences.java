@@ -1,4 +1,4 @@
-package org.lucassus.jmine.dialogs;
+package org.lucassus.jmine.gui.dialogs;
 
 import java.awt.Frame;
 import java.util.logging.Level;
