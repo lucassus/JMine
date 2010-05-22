@@ -10,6 +10,9 @@ import java.util.List;
 import org.lucassus.jmine.field.observers.IFieldObserver;
 import org.lucassus.jmine.field.observers.IMineFieldObserver;
 
+/**
+ * Represents the Mine Field.
+ */
 public class MineField implements IFieldObserver, Iterable<Field> {
 
     private int height;
@@ -28,12 +31,16 @@ public class MineField implements IFieldObserver, Iterable<Field> {
     private Field[][] fields;
     private IMineFieldObserver observer;
 
+    /**
+     * Creates a new instance of MineField.
+     */
     public MineField() {
         flagsCount = 0;
     }
 
     /**
-     * Creates a new instance of MineField
+     * Creates a new instance of MineField.
+     * @param gameType
      */
     public MineField(GameType gameType) {
         super();
@@ -56,6 +63,11 @@ public class MineField implements IFieldObserver, Iterable<Field> {
         randomizeMines();
     }
 
+    /**
+     * Creates a new instance of MineField.
+     * @param fields
+     * @param minesCount
+     */
     MineField(Field[][] fields, int minesCount) {
         super();
 

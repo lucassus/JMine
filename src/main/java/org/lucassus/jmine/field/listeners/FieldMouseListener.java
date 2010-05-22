@@ -5,14 +5,24 @@ import org.lucassus.jmine.enums.GameIcon;
 import java.awt.event.MouseEvent;
 import org.lucassus.jmine.field.Field;
 
+/**
+ * Handles mouse actions on the Field.
+ */
 public class FieldMouseListener extends MouseAdapter {
 
     private Field field;
 
+    /**
+     * Creates the FieldMouseListener instance.
+     * @param field
+     */
     public FieldMouseListener(Field field) {
         this.field = field;
     }
 
+    /**
+     * Handles a left mouse button click.
+     */
     private void leftMouseButtonClick() {
         if (field.hasFlag()) {
             return;
@@ -28,6 +38,9 @@ public class FieldMouseListener extends MouseAdapter {
         }
     }
 
+    /**
+     * Handles a right mouse button click.
+     */
     private void rightMouseButtonClick() {
         // ustawienie/sciagniecie flagi z pola minowego
         // jesli pole zostalo juz zdetonowane
@@ -44,6 +57,9 @@ public class FieldMouseListener extends MouseAdapter {
         }
     }
 
+    /**
+     * Handles a middle mouse button click.
+     */
     private void middleMouseButtonClick() {
         if (field.isDetonated() && field.getNeighborMinesCount() > 0) {
 
@@ -59,13 +75,14 @@ public class FieldMouseListener extends MouseAdapter {
 
     @Override
     public void mouseClicked(MouseEvent event) {
-        if (event.getButton() == MouseEvent.BUTTON1) {
+        final int button = event.getButton();
+
+        if (button == MouseEvent.BUTTON1) {
             leftMouseButtonClick();
-        } else if (event.getButton() == MouseEvent.BUTTON3) {
+        } else if (button == MouseEvent.BUTTON3) {
             rightMouseButtonClick();
-        } else if (event.getButton() == MouseEvent.BUTTON2) {
+        } else if (button == MouseEvent.BUTTON2) {
             middleMouseButtonClick();
         }
     }
-
 }

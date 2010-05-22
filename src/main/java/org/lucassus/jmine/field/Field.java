@@ -10,6 +10,9 @@ import java.util.List;
 import javax.swing.JButton;
 import org.lucassus.jmine.field.observers.IFieldObserver;
 
+/**
+ * Represents a Mine.
+ */
 public class Field extends JButton {
 
     /**
@@ -34,7 +37,9 @@ public class Field extends JButton {
     private List<Field> neighborFields;
     private IFieldObserver observer;
 
-    /** Creates a new instance of Mine */
+    /**
+     * Creates a new instance of Mine.
+     */
     public Field() {
         super();
         setText(null);
@@ -48,7 +53,7 @@ public class Field extends JButton {
     }
 
     /**
-     * Zwraca liczbe min znajdujacych sie w sasiedztwie pola
+     * Zwraca liczbe min znajdujacych sie w sasiedztwie pola.
      * @return liczba min znajdujacych sie w sasiedztwie
      */
     public int getNeighborMinesCount() {

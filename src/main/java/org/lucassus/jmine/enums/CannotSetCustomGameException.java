@@ -1,8 +1,7 @@
 package org.lucassus.jmine.enums;
 
 /**
- *
- * @author lucassus
+ * Exception that indicates conditions that user cannot set custom game options.
  */
 public class CannotSetCustomGameException extends Exception {
 

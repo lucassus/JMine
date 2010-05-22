@@ -82,7 +82,7 @@ public enum GameType {
 
     /**
      * Sets the Mine Field height.
-     * @param mineFieldHeight
+     * @param mineFieldHeight the Mine Field height.
      * @throws CannotSetCustomGameException if Player can't set custom Game configuration
      */
     public void setMineFieldHeight(final int mineFieldHeight) throws CannotSetCustomGameException {
