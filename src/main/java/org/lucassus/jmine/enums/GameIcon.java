@@ -51,7 +51,7 @@ public enum GameIcon {
      * @param iconFileName a name of file with icon.
      */
     GameIcon(final String iconFileName) {
-        URL location = getClass().getResource("/resources/" + iconFileName);
+        URL location = getClass().getResource("/resources/icons/" + iconFileName);
         icon = new ImageIcon(location);
     }
 

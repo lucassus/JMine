@@ -45,4 +45,9 @@ public class MineFieldIteratorTest {
         assertFalse(instance.hasNext());
         assertNull(instance.next());
     }
+
+    @Test(expectedExceptions = UnsupportedOperationException.class)
+    public void remove() {
+        instance.remove();
+    }
 }

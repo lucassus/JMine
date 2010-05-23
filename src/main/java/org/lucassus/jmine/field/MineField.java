@@ -162,7 +162,9 @@ public class MineField implements IFieldObserver, Iterable<Field> {
      */
     public boolean allDetonated() {
         int detonatedFieldsCount = getDetonatedFieldsCount();
-        return detonatedFieldsCount == (getFieldsCount() - minesCount);
+        int fieldsCount = getFieldsCount();
+        
+        return detonatedFieldsCount == (fieldsCount - minesCount);
     }
 
     /**
@@ -212,6 +214,11 @@ public class MineField implements IFieldObserver, Iterable<Field> {
         return neighbours;
     }
 
+    /**
+     * Finds coordinates for the given Field.
+     * @param field a field
+     * @return coordinates
+     */
     public Coordinate findCoordinateFor(Field field) {
         Coordinate coordinate = null;
 
@@ -302,6 +309,10 @@ public class MineField implements IFieldObserver, Iterable<Field> {
         return height;
     }
 
+    /**
+     * Get number of fields.
+     * @return the number of fields
+     */
     public int getFieldsCount() {
         return width * height;
     }

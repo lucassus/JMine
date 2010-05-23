@@ -14,6 +14,7 @@ import static org.testng.Assert.*;
 
 @Test
 public class MineFieldTest {
+    private static final int MINES_COUNT = 1;
 
     private Field[][] fields;
     @Mock
@@ -30,7 +31,7 @@ public class MineFieldTest {
     protected void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        minesCount = 1;
+        minesCount = MINES_COUNT;
         fields = new Field[][] {
             {field00, field01, field02},
             {field10, field11, field12},
@@ -187,5 +188,10 @@ public class MineFieldTest {
         verify(field02).setIcon(GameIcon.FLAG_WRONG.getIcon());
         verify(field02, never()).detonate();
         verify(field22).detonate();
+    }
+
+    @Test
+    public void allDetonated() {
+        assertFalse(instance.allDetonated());
     }
 }
