@@ -16,6 +16,7 @@ import javax.swing.Timer;
 import org.lucassus.jmine.field.Field;
 import org.lucassus.jmine.enums.GameIcon;
 import org.lucassus.jmine.enums.GameType;
+import org.lucassus.jmine.enums.Language;
 import org.lucassus.jmine.field.Coordinate;
 import org.lucassus.jmine.field.observers.IMineFieldObserver;
 
@@ -32,8 +33,7 @@ public class JMineFrame extends javax.swing.JFrame implements IMineFieldObserver
     /** Creates new form JMineFrame */
     public JMineFrame() {
         gameType = GameType.NOVICE;
-        currentLocale = new Locale("en", "GB");
-        messages = ResourceBundle.getBundle("resources/i18n/languages", currentLocale);
+        setLanguage(Language.ENGLISH);
 
         initTimer();
         initComponents();
@@ -143,37 +143,40 @@ public class JMineFrame extends javax.swing.JFrame implements IMineFieldObserver
 
         buttonGroupGameType = new javax.swing.ButtonGroup();
         buttonGroupLanguage = new javax.swing.ButtonGroup();
-        jPanelTop = new javax.swing.JPanel();
+        panelTop = new javax.swing.JPanel();
         buttonNewGame = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
+        panelTimer = new javax.swing.JPanel();
         textFieldCounter = new javax.swing.JTextField();
-        jPanel2 = new javax.swing.JPanel();
+        panelMinesLeftCounter = new javax.swing.JPanel();
         textFieldMinesLeftCount = new javax.swing.JTextField();
         panelMineField = new javax.swing.JPanel();
-        jMenuBar = new javax.swing.JMenuBar();
-        jMenuGame = new javax.swing.JMenu();
-        jMenuItemNewGame = new javax.swing.JMenuItem();
-        jMenuItemHint = new javax.swing.JMenuItem();
+        menuBar = new javax.swing.JMenuBar();
+        menuGame = new javax.swing.JMenu();
+        menuItemNewGame = new javax.swing.JMenuItem();
+        menuItemHint = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JSeparator();
         checkBoxMenuItemGameNovice = new javax.swing.JCheckBoxMenuItem();
         checkBoxMenuItemGameIntermediate = new javax.swing.JCheckBoxMenuItem();
         checkBoxMenuItemGameExpert = new javax.swing.JCheckBoxMenuItem();
         checkBoxMenuItemGameUser = new javax.swing.JCheckBoxMenuItem();
         jSeparator3 = new javax.swing.JSeparator();
-        jMenuItemExit = new javax.swing.JMenuItem();
-        jMenuOptions = new javax.swing.JMenu();
-        jMenuItemPreferences = new javax.swing.JMenuItem();
+        menuItemExit = new javax.swing.JMenuItem();
+        menuOptions = new javax.swing.JMenu();
+        menuItemPreferences = new javax.swing.JMenuItem();
+        menuLanguage = new javax.swing.JMenu();
+        checkBoxMenuItemEnglish = new javax.swing.JCheckBoxMenuItem();
+        checkBoxMenuItemPolish = new javax.swing.JCheckBoxMenuItem();
         jSeparator2 = new javax.swing.JSeparator();
         checkBoxMenuItemAlwaysOnTop = new javax.swing.JCheckBoxMenuItem();
-        jMenuHelp = new javax.swing.JMenu();
-        jMenuItemAbout = new javax.swing.JMenuItem();
+        menuHelp = new javax.swing.JMenu();
+        menuItemAbout = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("JMine");
+        setTitle(null);
         setResizable(false);
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        jPanelTop.setLayout(new java.awt.GridBagLayout());
+        panelTop.setLayout(new java.awt.GridBagLayout());
 
         buttonNewGame.setIcon(GameIcon.FACE.getIcon());
         buttonNewGame.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -191,36 +194,36 @@ public class JMineFrame extends javax.swing.JFrame implements IMineFieldObserver
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
-        jPanelTop.add(buttonNewGame, gridBagConstraints);
+        panelTop.add(buttonNewGame, gridBagConstraints);
 
         textFieldCounter.setEditable(false);
         textFieldCounter.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         textFieldCounter.setText("0");
         textFieldCounter.setPreferredSize(new java.awt.Dimension(50, 19));
-        jPanel1.add(textFieldCounter);
+        panelTimer.add(textFieldCounter);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 30);
-        jPanelTop.add(jPanel1, gridBagConstraints);
+        panelTop.add(panelTimer, gridBagConstraints);
 
         textFieldMinesLeftCount.setEditable(false);
         textFieldMinesLeftCount.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        textFieldMinesLeftCount.setText("0");
+        textFieldMinesLeftCount.setText(null);
         textFieldMinesLeftCount.setPreferredSize(new java.awt.Dimension(50, 19));
-        jPanel2.add(textFieldMinesLeftCount);
+        panelMinesLeftCounter.add(textFieldMinesLeftCount);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.insets = new java.awt.Insets(0, 30, 0, 0);
-        jPanelTop.add(jPanel2, gridBagConstraints);
+        panelTop.add(panelMinesLeftCounter, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
-        getContentPane().add(jPanelTop, gridBagConstraints);
+        getContentPane().add(panelTop, gridBagConstraints);
 
         panelMineField.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         panelMineField.setLayout(new java.awt.GridBagLayout());
@@ -230,113 +233,136 @@ public class JMineFrame extends javax.swing.JFrame implements IMineFieldObserver
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 3, 0);
         getContentPane().add(panelMineField, gridBagConstraints);
 
-        jMenuGame.setText(messages.getString("Game")); // NOI18N
+        menuGame.setText(messages.getString("menu.game")); // NOI18N
 
-        jMenuItemNewGame.setText(messages.getString("New_Game")); // NOI18N
-        jMenuItemNewGame.addActionListener(new java.awt.event.ActionListener() {
+        menuItemNewGame.setText(messages.getString("menu.game.new")); // NOI18N
+        menuItemNewGame.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItemNewGameActionPerformed(evt);
+                menuItemNewGameActionPerformed(evt);
             }
         });
-        jMenuGame.add(jMenuItemNewGame);
+        menuGame.add(menuItemNewGame);
 
-        jMenuItemHint.setText(messages.getString("Hint")); // NOI18N
-        jMenuItemHint.addActionListener(new java.awt.event.ActionListener() {
+        menuItemHint.setText(messages.getString("menu.game.hint")); // NOI18N
+        menuItemHint.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItemHintActionPerformed(evt);
+                menuItemHintActionPerformed(evt);
             }
         });
-        jMenuGame.add(jMenuItemHint);
-        jMenuGame.add(jSeparator1);
+        menuGame.add(menuItemHint);
+        menuGame.add(jSeparator1);
 
         buttonGroupGameType.add(checkBoxMenuItemGameNovice);
-        checkBoxMenuItemGameNovice.setText(messages.getString("Novice")); // NOI18N
+        checkBoxMenuItemGameNovice.setText(messages.getString("menu.game.type.novice")); // NOI18N
         checkBoxMenuItemGameNovice.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkBoxMenuItemGameNoviceActionPerformed(evt);
             }
         });
-        jMenuGame.add(checkBoxMenuItemGameNovice);
+        menuGame.add(checkBoxMenuItemGameNovice);
 
         buttonGroupGameType.add(checkBoxMenuItemGameIntermediate);
-        checkBoxMenuItemGameIntermediate.setText(messages.getString("Intermediate")); // NOI18N
+        checkBoxMenuItemGameIntermediate.setText(messages.getString("menu.game.type.intermediate")); // NOI18N
         checkBoxMenuItemGameIntermediate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkBoxMenuItemGameIntermediateActionPerformed(evt);
             }
         });
-        jMenuGame.add(checkBoxMenuItemGameIntermediate);
+        menuGame.add(checkBoxMenuItemGameIntermediate);
 
         buttonGroupGameType.add(checkBoxMenuItemGameExpert);
-        checkBoxMenuItemGameExpert.setText(messages.getString("Expert")); // NOI18N
+        checkBoxMenuItemGameExpert.setText(messages.getString("menu.game.type.expert")); // NOI18N
         checkBoxMenuItemGameExpert.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkBoxMenuItemGameExpertActionPerformed(evt);
             }
         });
-        jMenuGame.add(checkBoxMenuItemGameExpert);
+        menuGame.add(checkBoxMenuItemGameExpert);
 
         buttonGroupGameType.add(checkBoxMenuItemGameUser);
-        checkBoxMenuItemGameUser.setText(messages.getString("User_game")); // NOI18N
+        checkBoxMenuItemGameUser.setText(messages.getString("menu.game.type.user")); // NOI18N
         checkBoxMenuItemGameUser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkBoxMenuItemGameUserActionPerformed(evt);
             }
         });
-        jMenuGame.add(checkBoxMenuItemGameUser);
-        jMenuGame.add(jSeparator3);
+        menuGame.add(checkBoxMenuItemGameUser);
+        menuGame.add(jSeparator3);
 
-        jMenuItemExit.setText(messages.getString("Exit")); // NOI18N
-        jMenuItemExit.addActionListener(new java.awt.event.ActionListener() {
+        menuItemExit.setText(messages.getString("menu.game.exit")); // NOI18N
+        menuItemExit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItemExitActionPerformed(evt);
+                menuItemExitActionPerformed(evt);
             }
         });
-        jMenuGame.add(jMenuItemExit);
+        menuGame.add(menuItemExit);
 
-        jMenuBar.add(jMenuGame);
+        menuBar.add(menuGame);
 
-        jMenuOptions.setText(messages.getString("Options")); // NOI18N
+        menuOptions.setText(messages.getString("menu.options")); // NOI18N
 
-        jMenuItemPreferences.setText(messages.getString("Preferences")); // NOI18N
-        jMenuItemPreferences.addActionListener(new java.awt.event.ActionListener() {
+        menuItemPreferences.setText(messages.getString("menu.options.preferences")); // NOI18N
+        menuItemPreferences.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItemPreferencesActionPerformed(evt);
+                menuItemPreferencesActionPerformed(evt);
             }
         });
-        jMenuOptions.add(jMenuItemPreferences);
-        jMenuOptions.add(jSeparator2);
+        menuOptions.add(menuItemPreferences);
 
-        checkBoxMenuItemAlwaysOnTop.setText(messages.getString("Always_on_top")); // NOI18N
+        menuLanguage.setText("Language");
+
+        buttonGroupLanguage.add(checkBoxMenuItemEnglish);
+        checkBoxMenuItemEnglish.setSelected(true);
+        checkBoxMenuItemEnglish.setText("English");
+        checkBoxMenuItemEnglish.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                checkBoxMenuItemEnglishActionPerformed(evt);
+            }
+        });
+        menuLanguage.add(checkBoxMenuItemEnglish);
+
+        buttonGroupLanguage.add(checkBoxMenuItemPolish);
+        checkBoxMenuItemPolish.setText("Polish");
+        checkBoxMenuItemPolish.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                checkBoxMenuItemPolishActionPerformed(evt);
+            }
+        });
+        menuLanguage.add(checkBoxMenuItemPolish);
+
+        menuOptions.add(menuLanguage);
+        menuOptions.add(jSeparator2);
+
+        checkBoxMenuItemAlwaysOnTop.setText(messages.getString("menu.options.always_on_top")); // NOI18N
         checkBoxMenuItemAlwaysOnTop.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkBoxMenuItemAlwaysOnTopActionPerformed(evt);
             }
         });
-        jMenuOptions.add(checkBoxMenuItemAlwaysOnTop);
+        menuOptions.add(checkBoxMenuItemAlwaysOnTop);
 
-        jMenuBar.add(jMenuOptions);
+        menuBar.add(menuOptions);
 
-        jMenuHelp.setText(messages.getString("Help")); // NOI18N
+        menuHelp.setText(messages.getString("menu.help")); // NOI18N
 
-        jMenuItemAbout.setText(messages.getString("About")); // NOI18N
-        jMenuItemAbout.addActionListener(new java.awt.event.ActionListener() {
+        menuItemAbout.setText(messages.getString("menu.help.about")); // NOI18N
+        menuItemAbout.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItemAboutActionPerformed(evt);
+                menuItemAboutActionPerformed(evt);
             }
         });
-        jMenuHelp.add(jMenuItemAbout);
+        menuHelp.add(menuItemAbout);
 
-        jMenuBar.add(jMenuHelp);
+        menuBar.add(menuHelp);
 
-        setJMenuBar(jMenuBar);
+        setJMenuBar(menuBar);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-	private void jMenuItemHintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemHintActionPerformed
+	private void menuItemHintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemHintActionPerformed
         mineField.hint();
-	}//GEN-LAST:event_jMenuItemHintActionPerformed
+	}//GEN-LAST:event_menuItemHintActionPerformed
 
 	private void checkBoxMenuItemGameUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxMenuItemGameUserActionPerformed
         gameType = GameType.USER;
@@ -368,18 +394,18 @@ public class JMineFrame extends javax.swing.JFrame implements IMineFieldObserver
         newGame();
 	}//GEN-LAST:event_buttonNewGameActionPerformed
 
-	private void jMenuItemNewGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemNewGameActionPerformed
+	private void menuItemNewGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemNewGameActionPerformed
         newGame();
-	}//GEN-LAST:event_jMenuItemNewGameActionPerformed
+	}//GEN-LAST:event_menuItemNewGameActionPerformed
 
-	private void jMenuItemPreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemPreferencesActionPerformed
+	private void menuItemPreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemPreferencesActionPerformed
         JDialogPreferences preferencesDialog = new JDialogPreferences(this, true, gameType);
         preferencesDialog.setVisible(true);
         gameType = preferencesDialog.getGameType();
 
         initGameTypeCheckBoxes();
         newGame();
-	}//GEN-LAST:event_jMenuItemPreferencesActionPerformed
+	}//GEN-LAST:event_menuItemPreferencesActionPerformed
 
 	private void checkBoxMenuItemAlwaysOnTopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxMenuItemAlwaysOnTopActionPerformed
         if (checkBoxMenuItemAlwaysOnTop.isSelected()) {
@@ -389,38 +415,50 @@ public class JMineFrame extends javax.swing.JFrame implements IMineFieldObserver
         }
 	}//GEN-LAST:event_checkBoxMenuItemAlwaysOnTopActionPerformed
 
-	private void jMenuItemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemExitActionPerformed
+	private void menuItemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemExitActionPerformed
         System.exit(0);
-	}//GEN-LAST:event_jMenuItemExitActionPerformed
+	}//GEN-LAST:event_menuItemExitActionPerformed
 
-	private void jMenuItemAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAboutActionPerformed
+	private void menuItemAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemAboutActionPerformed
         new JDialogAbout(this, true).setVisible(true);
-	}//GEN-LAST:event_jMenuItemAboutActionPerformed
+	}//GEN-LAST:event_menuItemAboutActionPerformed
+
+    private void checkBoxMenuItemEnglishActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxMenuItemEnglishActionPerformed
+        // TODO
+    }//GEN-LAST:event_checkBoxMenuItemEnglishActionPerformed
+
+    private void checkBoxMenuItemPolishActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxMenuItemPolishActionPerformed
+        // TODO
+    }//GEN-LAST:event_checkBoxMenuItemPolishActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroupGameType;
     private javax.swing.ButtonGroup buttonGroupLanguage;
     private javax.swing.JButton buttonNewGame;
     private javax.swing.JCheckBoxMenuItem checkBoxMenuItemAlwaysOnTop;
+    private javax.swing.JCheckBoxMenuItem checkBoxMenuItemEnglish;
     private javax.swing.JCheckBoxMenuItem checkBoxMenuItemGameExpert;
     private javax.swing.JCheckBoxMenuItem checkBoxMenuItemGameIntermediate;
     private javax.swing.JCheckBoxMenuItem checkBoxMenuItemGameNovice;
     private javax.swing.JCheckBoxMenuItem checkBoxMenuItemGameUser;
-    private javax.swing.JMenuBar jMenuBar;
-    private javax.swing.JMenu jMenuGame;
-    private javax.swing.JMenu jMenuHelp;
-    private javax.swing.JMenuItem jMenuItemAbout;
-    private javax.swing.JMenuItem jMenuItemExit;
-    private javax.swing.JMenuItem jMenuItemHint;
-    private javax.swing.JMenuItem jMenuItemNewGame;
-    private javax.swing.JMenuItem jMenuItemPreferences;
-    private javax.swing.JMenu jMenuOptions;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanelTop;
+    private javax.swing.JCheckBoxMenuItem checkBoxMenuItemPolish;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JMenuBar menuBar;
+    private javax.swing.JMenu menuGame;
+    private javax.swing.JMenu menuHelp;
+    private javax.swing.JMenuItem menuItemAbout;
+    private javax.swing.JMenuItem menuItemExit;
+    private javax.swing.JMenuItem menuItemHint;
+    private javax.swing.JMenuItem menuItemNewGame;
+    private javax.swing.JMenuItem menuItemPreferences;
+    private javax.swing.JMenu menuLanguage;
+    private javax.swing.JMenu menuOptions;
     private javax.swing.JPanel panelMineField;
+    private javax.swing.JPanel panelMinesLeftCounter;
+    private javax.swing.JPanel panelTimer;
+    private javax.swing.JPanel panelTop;
     private javax.swing.JTextField textFieldCounter;
     private javax.swing.JTextField textFieldMinesLeftCount;
     // End of variables declaration//GEN-END:variables
@@ -441,5 +479,10 @@ public class JMineFrame extends javax.swing.JFrame implements IMineFieldObserver
     public void gameOver() {
         buttonNewGame.setIcon(GameIcon.FACE_DEAD.getIcon());
         stopTimer();
+    }
+
+    private void setLanguage(Language language) {
+        currentLocale = language.getLocale();
+        messages = ResourceBundle.getBundle("resources/i18n/languages", currentLocale);
     }
 }

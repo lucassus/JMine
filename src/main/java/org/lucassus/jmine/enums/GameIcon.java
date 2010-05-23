@@ -41,6 +41,8 @@ public enum GameIcon {
      */
     MARK("question_mark.png");
 
+    private static final String ICONS_PATH = "/resources/icons/";
+
     /**
      * The icon.
      */
@@ -51,7 +53,7 @@ public enum GameIcon {
      * @param iconFileName a name of file with icon.
      */
     GameIcon(final String iconFileName) {
-        URL location = getClass().getResource("/resources/icons/" + iconFileName);
+        URL location = getClass().getResource(ICONS_PATH + iconFileName);
         icon = new ImageIcon(location);
     }
 
