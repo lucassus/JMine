@@ -12,7 +12,7 @@ public class GameIconTest {
      */
     @Test
     public void getIcon() {
-        URL iconLocation = getClass().getResource("/resources/flag.gif");
+        URL iconLocation = getClass().getResource("/resources/icons/flag.gif");
         ImageIcon expResult = new ImageIcon(iconLocation);
         ImageIcon result = GameIcon.FLAG.getIcon();
 
